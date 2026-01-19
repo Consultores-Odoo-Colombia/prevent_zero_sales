@@ -1,0 +1,244 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* prevent_zero_sales
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-17 21:23+0000\n"
+"PO-Revision-Date: 2026-01-17 21:23+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"<div class=\"alert alert-danger\" role=\"alert\">⚠️ <b>Stock Alert "
+"(Sales):</b> Quantity exceeds available stock (%s).</div>"
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"<div class=\"alert alert-danger\" role=\"alert\">⚠️ <b>Stock Alert:</b> "
+"Requested quantity exceeds available stock (%s).</div>"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"The product has been removed because there is no available stock (%s) and "
+"restriction is active."
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid "The product has been removed because there is no available stock (%s)."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Choose whether to validate against physical or forecasted stock."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid ""
+"Prevent adding products with zero or negative stock to customer "
+"invoices."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid ""
+"Prevent adding products with zero or negative stock to sales orders."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"You cannot invoice more than available stock. (Requested: %s, Available: "
+"%s)."
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"You cannot request more than available stock. (Requested: %s, Available: "
+"%s)."
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-javascript
+#: code:addons/prevent_zero_sales/static/src/xml/stock_restricted_list_renderer.xml:0
+msgid ""
+"Adding products with zero or insufficient stock is not allowed. Please "
+"correct existing lines."
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"Cannot confirm sale: The price for product %s is 0 or negative."
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"Cannot confirm sale: The quantity for product %s is 0 or negative."
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid "Cannot confirm an empty sale order."
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid "Cannot confirm: The price for product %s is 0 or negative."
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"Cannot confirm: The quantity for product line %s is 0 or negative."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_product_product
+msgid "Product Variant"
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid "Product Not Available (Restriction Active)"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_account_move_line__qty_on_hand_check
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_sale_order_line__qty_on_hand_check
+msgid "Qty On Hand Check"
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid ""
+"Restriction Active: Not enough stock for product %s. "
+"(Requested: %s, Available: %s)"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__restrict_zero_invoice
+msgid "Prevent Zero Invoicing"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__restrict_zero_invoice
+msgid "Prevent Invoices with Zero/Negative Stock"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__restrict_zero_pos
+msgid "Prevent POS with Zero/Negative Stock"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__restrict_zero_pos
+msgid "Prevent Zero POS"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__restrict_zero_sale
+msgid "Prevent Sales with Zero/Negative Stock"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__restrict_zero_sale
+msgid "Prevent Zero Sales"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_sale_order_line
+msgid "Sales Order Line"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields.selection,name:prevent_zero_sales.selection__res_company__stock_restriction_type__on_hand
+msgid "On Hand Stock (Physical)"
+msgstr ""
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/models.py:0
+msgid "Insufficient Stock (Restriction Active)"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields.selection,name:prevent_zero_sales.selection__res_company__stock_restriction_type__forecast
+msgid "Forecasted Stock (Virtual)"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Stock Restrictions"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_account_bank_statement_line__stock_warning_banner
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_account_move__stock_warning_banner
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_sale_order__stock_warning_banner
+msgid "Stock Warning Banner"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__stock_restriction_type
+msgid "Restriction Type"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__stock_restriction_type
+msgid "Stock Restriction Type"
+msgstr ""
