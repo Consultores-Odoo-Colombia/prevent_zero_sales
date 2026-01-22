@@ -10,11 +10,14 @@
                 <!-- Sales Settings: Insert after 'Product Catalog' block -->
                 <xpath expr="//block[@name='catalog_setting_container']" position="after">
                     <block title="Stock Restrictions" id="stock_restriction_sale_setting" app="sale">
-                        <setting id="restrict_zero_stock_sale" help="Impide agregar productos con stock cero o negativo a las órdenes de venta.">
+                        <setting id="restrict_zero_stock_sale" help="Prevents adding products with zero or negative stock to sales orders.">
                             <field name="restrict_zero_sale"/>
                         </setting>
-                        <setting id="stock_restriction_type_sale" help="Elige si validar contra stock físico o pronosticado.">
-                            <field name="stock_restriction_type" widget="radio"/>
+                        <setting id="restrict_zero_stock_sale" help="Prevents adding products with zero or negative stock to sales orders.">
+                            <field name="restrict_zero_sale"/>
+                        </setting>
+                        <setting id="stock_validation_policy_sale" help="Defines if the restriction applies to all products or respects the invoicing policy.">
+                            <field name="stock_validation_policy" widget="radio"/>
                         </setting>
                     </block>
                 </xpath>
@@ -22,11 +25,14 @@
                 <!-- Invoicing Settings: Insert after 'Customer Invoices' block -->
                  <xpath expr="//block[@id='invoicing_settings']" position="after">
                     <block title="Stock Restrictions" id="stock_restriction_account_setting" app="account">
-                        <setting id="restrict_zero_stock_invoice" help="Impide agregar productos con stock cero o negativo a las facturas de cliente.">
+                        <setting id="restrict_zero_stock_invoice" help="Prevents adding products with zero or negative stock to customer invoices.">
                             <field name="restrict_zero_invoice"/>
                         </setting>
-                        <setting id="stock_restriction_type_account" help="Elige si validar contra stock físico o pronosticado.">
-                            <field name="stock_restriction_type" widget="radio"/>
+                        <setting id="restrict_zero_stock_invoice" help="Prevents adding products with zero or negative stock to customer invoices.">
+                            <field name="restrict_zero_invoice"/>
+                        </setting>
+                        <setting id="stock_validation_policy_account" help="Defines if the restriction applies to all products or respects the invoicing policy.">
+                            <field name="stock_validation_policy" widget="radio"/>
                         </setting>
                     </block>
                 </xpath>
