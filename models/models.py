@@ -24,8 +24,12 @@ class AccountMove(models.Model):
                     if line.display_type == 'product' or (not line.display_type and line.product_id):
                         # Config check: only warn if restricted
                          if line.product_id.type != 'service':
-                            stock_field = 'virtual_available' if move.company_id.stock_restriction_type == 'forecast' else 'qty_available'
-                            stock_qty = getattr(line.product_id, stock_field)
+                            if move.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                                continue
+                            if move.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                                continue
+                            # Always use Forecasted Stock
+                            stock_qty = line.product_id.virtual_available
                             
                             if line.quantity > stock_qty:
                                 move.stock_warning_banner = _('<div class="alert alert-danger" role="alert">⚠️ <b>Stock Alert:</b> Requested quantity exceeds available stock (%s).</div>') % stock_qty
@@ -50,8 +54,12 @@ class AccountMove(models.Model):
                         
                         # Stock Check
                         if line.product_id.type != 'service':
-                             stock_field = 'virtual_available' if move.company_id.stock_restriction_type == 'forecast' else 'qty_available'
-                             stock_qty = getattr(line.product_id, stock_field)
+                             if move.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                                 continue
+                             if move.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                                 continue
+                             # Always use Forecasted Stock
+                             stock_qty = line.product_id.virtual_available
                              
                              if line.quantity > stock_qty:
                                 raise ValidationError(_("Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.quantity, stock_qty))
@@ -76,8 +84,12 @@ class SaleOrder(models.Model):
 
             for line in order.order_line:
                 if line.product_id.type != 'service':
-                    stock_field = 'virtual_available' if order.company_id.stock_restriction_type == 'forecast' else 'qty_available'
-                    stock_qty = getattr(line.product_id, stock_field)
+                    if order.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                        continue
+                    if order.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                        continue
+                    # Always use Forecasted Stock
+                    stock_qty = line.product_id.virtual_available
                     
                     if line.product_uom_qty > stock_qty:
                         order.stock_warning_banner = _('<div class="alert alert-danger" role="alert">⚠️ <b>Stock Alert (Sales):</b> Quantity exceeds available stock (%s).</div>') % stock_qty
@@ -100,8 +112,12 @@ class SaleOrder(models.Model):
                      raise ValidationError(_("Cannot confirm sale: The price for product %s is 0 or negative.") % line.product_id.name)
 
                 if line.product_id.type != 'service':
-                    stock_field = 'virtual_available' if order.company_id.stock_restriction_type == 'forecast' else 'qty_available'
-                    stock_qty = getattr(line.product_id, stock_field)
+                    if order.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                        continue
+                    if order.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                        continue
+                    # Always use Forecasted Stock
+                    stock_qty = line.product_id.virtual_available
                     
                     if line.product_uom_qty > stock_qty:
                          raise ValidationError(_("Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.product_uom_qty, stock_qty))
@@ -134,28 +150,46 @@ class SaleOrderLine(models.Model):
             if not company.restrict_zero_sale:
                 return
 
-            stock_field = 'virtual_available' if company.stock_restriction_type == 'forecast' else 'qty_available'
-            stock_on_hand = getattr(line.product_id, stock_field)
+            if company.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                return
+
+            if company.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                return
+
+            # Always use Forecasted Stock
+            stock_on_hand = line.product_id.virtual_available
             
+            # 1. Check Negative Quantity (User Requirement: Delete line if negative)
+            # Allow 0 initially (Odoo default), invalid 0 will be blocked on confirm.
+            if line.product_uom_qty < 0:
+                 line.product_id = False
+                 line.product_uom_qty = 0
+                 return {
+                    'warning': {
+                        'title': _("Invalid Quantity"),
+                        'message': _("Quantity cannot be negative. The product has been removed.")
+                    }
+                }
+
+            # 2. Check Zero/Negative Scok (User Requirement: Delete line)
             if stock_on_hand <= 0:
                  # Clear line
                  line.product_id = False
                  line.product_uom_qty = 0
                  return {
                     'warning': {
-                        'title': _("Product Not Available (Restriction Active)"),
-                        'message': _("The product has been removed because there is no available stock (%s) and restriction is active.") % stock_on_hand
+                        'title': _("Product Not Available"),
+                        'message': _("The product has been removed because there is no available stock (%s).") % stock_on_hand
                     }
                 }
             
+            # 3. Check Insufficient Stock (User Requirement: Limit Quantity)
             if line.product_uom_qty > stock_on_hand:
-                 ordered_qty = line.product_uom_qty
-                 line.product_id = False
-                 line.product_uom_qty = 0
+                 line.product_uom_qty = stock_on_hand
                  return {
                     'warning': {
-                        'title': _("Insufficient Stock (Restriction Active)"),
-                        'message': _("You cannot request more than available stock. (Requested: %s, Available: %s).") % (ordered_qty, stock_on_hand)
+                        'title': _("Insufficient Stock"),
+                        'message': _("You cannot add more quantity because there is not enough stock. (Available: %s)") % stock_on_hand
                     }
                 }
 
@@ -191,27 +225,45 @@ class AccountMoveLine(models.Model):
             if not company.restrict_zero_invoice:
                 return
 
-            stock_field = 'virtual_available' if company.stock_restriction_type == 'forecast' else 'qty_available'
-            stock_on_hand = getattr(line.product_id, stock_field)
+            if company.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                return
+
+            if company.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                return
+
+            # Always use Forecasted Stock
+            stock_on_hand = line.product_id.virtual_available
             
+            # 1. Check Negative Quantity (User Requirement: Delete line if negative)
+            # Allow 0 initially (Odoo default), invalid 0 will be blocked on confirm.
+            if line.quantity < 0:
+                 line.product_id = False
+                 line.quantity = 0
+                 return {
+                    'warning': {
+                        'title': _("Invalid Quantity"),
+                        'message': _("Quantity cannot be negative. The product has been removed.")
+                    }
+                }
+
+            # 2. Check Zero/Negative Stock (User Requirement: Delete line)
             if stock_on_hand <= 0:
                  line.product_id = False
                  line.quantity = 0
                  return {
                     'warning': {
-                        'title': _("Product Not Available (Restriction Active)"),
+                        'title': _("Product Not Available"),
                         'message': _("The product has been removed because there is no available stock (%s).") % stock_on_hand
                     }
                 }
 
+            # 3. Check Insufficient Stock (User Requirement: Limit Quantity)
             if line.quantity > stock_on_hand:
-                 ordered_qty = line.quantity
-                 line.product_id = False
-                 line.quantity = 0
+                 line.quantity = stock_on_hand
                  return {
                     'warning': {
-                        'title': _("Insufficient Stock (Restriction Active)"),
-                        'message': _("You cannot invoice more than available stock. (Requested: %s, Available: %s).") % (ordered_qty, stock_on_hand)
+                        'title': _("Insufficient Stock"),
+                        'message': _("You cannot add more quantity because there is not enough stock. (Available: %s)") % stock_on_hand
                     }
                 }
 
@@ -237,19 +289,12 @@ class ProductProduct(models.Model):
             return 0
 
         # Check Config
-        stock_type = pos_config.company_id.stock_restriction_type
-        _logger.info(f"[STOCK_CHECK] Product: {self.display_name}, Config: {stock_type}, Location: {location.name} ({location.id})")
+        # Check Config
+        _logger.info(f"[STOCK_CHECK] Product: {self.display_name}, Location: {location.name} ({location.id})")
         
-        if stock_type == 'forecast':
-             qty = self.with_context(location=location.id).virtual_available
-             _logger.info(f"[STOCK_CHECK] Forecast Logic -> {qty}")
-             return qty
-        else:
-            # ON HAND (Physical) - Using Quants
-            quants = self.env['stock.quant'].search([('product_id', '=', self.id), ('location_id', 'child_of', location.id)])
-            # Use 'quantity' (Physical On Hand) to ignore Reservations
-            qty = sum(quants.mapped('quantity')) 
-            _logger.info(f"[STOCK_CHECK] On Hand Logic (Physical) -> {qty}")
-            return qty
+        # Always use Forecasted Stock logic
+        qty = self.with_context(location=location.id).virtual_available
+        _logger.info(f"[STOCK_CHECK] Forecast Logic -> {qty}")
+        return qty
 
 
