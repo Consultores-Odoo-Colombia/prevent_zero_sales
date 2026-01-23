@@ -12,12 +12,35 @@
                     <block title="Stock Restrictions" id="stock_restriction_sale_setting" app="sale">
                         <setting id="restrict_zero_stock_sale" help="Prevents adding products with zero or negative stock to sales orders.">
                             <field name="restrict_zero_sale"/>
-                        </setting>
-                        <setting id="restrict_zero_stock_sale" help="Prevents adding products with zero or negative stock to sales orders.">
-                            <field name="restrict_zero_sale"/>
-                        </setting>
-                        <setting id="stock_validation_policy_sale" help="Defines if the restriction applies to all products or respects the invoicing policy.">
-                            <field name="stock_validation_policy" widget="radio"/>
+                            <div class="content-group" invisible="not restrict_zero_sale">
+                                <div class="row mt16">
+                                    <label for="strict_stock_validation" class="col-lg-3 o_light_label"/>
+                                    <field name="strict_stock_validation"/>
+                                </div>
+                                <div class="row mt16">
+                                    <span class="col-lg-3 o_light_label">Restrict Logic</span>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex">
+                                            <field name="sale_restrict_storable" class="mr-2"/>
+                                            <label for="sale_restrict_storable" string="Storable Products"/>
+                                        </div>
+                                        <div class="d-flex">
+                                            <field name="sale_restrict_consumable" class="mr-2"/>
+                                            <label for="sale_restrict_consumable" string="Consumable Products"/>
+                                        </div>
+                                        <div class="d-flex">
+                                            <field name="sale_restrict_service" class="mr-2"/>
+                                            <label for="sale_restrict_service" string="Services"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt16">
+                                    <div class="d-flex">
+                                        <field name="sale_restrict_duplicate" class="mr-2"/>
+                                        <label for="sale_restrict_duplicate" string="Prevent Duplicate Lines (Same Product)"/>
+                                    </div>
+                                </div>
+                            </div>
                         </setting>
                     </block>
                 </xpath>
@@ -27,12 +50,31 @@
                     <block title="Stock Restrictions" id="stock_restriction_account_setting" app="account">
                         <setting id="restrict_zero_stock_invoice" help="Prevents adding products with zero or negative stock to customer invoices.">
                             <field name="restrict_zero_invoice"/>
-                        </setting>
-                        <setting id="restrict_zero_stock_invoice" help="Prevents adding products with zero or negative stock to customer invoices.">
-                            <field name="restrict_zero_invoice"/>
-                        </setting>
-                        <setting id="stock_validation_policy_account" help="Defines if the restriction applies to all products or respects the invoicing policy.">
-                            <field name="stock_validation_policy" widget="radio"/>
+                            <div class="content-group" invisible="not restrict_zero_invoice">
+                                <div class="row mt16">
+                                    <span class="col-lg-3 o_light_label">Restrict Logic</span>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex">
+                                            <field name="invoice_restrict_storable" class="mr-2"/>
+                                            <label for="invoice_restrict_storable" string="Storable Products"/>
+                                        </div>
+                                        <div class="d-flex">
+                                            <field name="invoice_restrict_consumable" class="mr-2"/>
+                                            <label for="invoice_restrict_consumable" string="Consumable Products"/>
+                                        </div>
+                                        <div class="d-flex">
+                                            <field name="invoice_restrict_service" class="mr-2"/>
+                                            <label for="invoice_restrict_service" string="Services"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt16">
+                                    <div class="d-flex">
+                                        <field name="invoice_restrict_duplicate" class="mr-2"/>
+                                        <label for="invoice_restrict_duplicate" string="Prevent Duplicate Lines (Same Product)"/>
+                                    </div>
+                                </div>
+                            </div>
                         </setting>
                     </block>
                 </xpath>

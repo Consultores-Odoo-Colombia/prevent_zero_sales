@@ -23,17 +23,29 @@ class AccountMove(models.Model):
                 for line in move.invoice_line_ids:
                     if line.display_type == 'product' or (not line.display_type and line.product_id):
                         # Config check: only warn if restricted
-                         if line.product_id.type != 'service':
-                            if move.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                        product_type = line.product_id.type
+                        is_restricted = False
+                        if product_type == 'product' and move.company_id.invoice_restrict_storable:
+                            is_restricted = True
+                        elif product_type == 'consu' and move.company_id.invoice_restrict_consumable:
+                            is_restricted = True
+                        elif product_type == 'service' and move.company_id.invoice_restrict_service:
+                            is_restricted = True
+                        
+                        if not is_restricted:
+                            continue
+
+                        # Check Policy
+                        if not move.company_id.strict_stock_validation:
+                            if line.product_id.invoice_policy == 'delivery':
                                 continue
-                            if move.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
-                                continue
-                            # Always use Forecasted Stock
-                            stock_qty = line.product_id.virtual_available
-                            
-                            if line.quantity > stock_qty:
-                                move.stock_warning_banner = _('<div class="alert alert-danger" role="alert">⚠️ <b>Stock Alert:</b> Requested quantity exceeds available stock (%s).</div>') % stock_qty
-                                break
+
+                        # Always use Forecasted Stock
+                        stock_qty = line.product_id.virtual_available
+                        
+                        if line.quantity > stock_qty:
+                            move.stock_warning_banner = _('<div class="alert alert-danger" role="alert">⚠️ <b>Stock Alert:</b> Requested quantity exceeds available stock (%s).</div>') % stock_qty
+                            break
 
     def action_post(self):
         # Strict Validation on Post (Invoice Confirmation)
@@ -53,21 +65,40 @@ class AccountMove(models.Model):
                             raise ValidationError(_("Cannot confirm: The price for product %s is 0 or negative.") % line.product_id.name)
                         
                         # Stock Check
-                        if line.product_id.type != 'service':
-                             if move.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
-                                 continue
-                             if move.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
-                                 continue
-                             # Always use Forecasted Stock
-                             stock_qty = line.product_id.virtual_available
-                             
-                             if line.quantity > stock_qty:
-                                raise ValidationError(_("Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.quantity, stock_qty))
+                        product_type = line.product_id.type
+                        is_restricted = False
+                        if product_type == 'product' and move.company_id.invoice_restrict_storable:
+                            is_restricted = True
+                        elif product_type == 'consu' and move.company_id.invoice_restrict_consumable:
+                            is_restricted = True
+                        elif product_type == 'service' and move.company_id.invoice_restrict_service:
+                            is_restricted = True
+                        
+                        if not is_restricted:
+                            continue
+
+                        # Check Policy
+                        if not move.company_id.strict_stock_validation:
+                            if line.product_id.invoice_policy == 'delivery':
+                                continue
+
+                        # Always use Forecasted Stock
+                        stock_qty = line.product_id.virtual_available
+                        
+                        if line.quantity > stock_qty:
+                            raise ValidationError(_("Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.quantity, stock_qty))
+            
+            # Check for Duplicate Lines (Configurable)
+            if move.company_id.invoice_restrict_duplicate:
+                product_counts = {}
+                for line in move.invoice_line_ids:
+                    if not line.product_id:
+                        continue
+                    if line.product_id.id in product_counts:
+                        raise ValidationError(_("Duplicate Line Restriction: Product %s is present multiple times in the invoice.") % line.product_id.name)
+                    product_counts[line.product_id.id] = True
         
         return super(AccountMove, self).action_post()
-
-
-
 
 
 class SaleOrder(models.Model):
@@ -83,17 +114,28 @@ class SaleOrder(models.Model):
                 continue
 
             for line in order.order_line:
-                if line.product_id.type != 'service':
-                    if order.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                product_type = line.product_id.type
+                is_restricted = False
+                if product_type == 'product' and order.company_id.sale_restrict_storable:
+                    is_restricted = True
+                elif product_type == 'consu' and order.company_id.sale_restrict_consumable:
+                    is_restricted = True
+                elif product_type == 'service' and order.company_id.sale_restrict_service:
+                    is_restricted = True
+                
+                if not is_restricted:
+                    continue
+
+                if not order.company_id.strict_stock_validation:
+                    if line.product_id.invoice_policy == 'delivery':
                         continue
-                    if order.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
-                        continue
-                    # Always use Forecasted Stock
-                    stock_qty = line.product_id.virtual_available
-                    
-                    if line.product_uom_qty > stock_qty:
-                        order.stock_warning_banner = _('<div class="alert alert-danger" role="alert">⚠️ <b>Stock Alert (Sales):</b> Quantity exceeds available stock (%s).</div>') % stock_qty
-                        break
+
+                # Always use Forecasted Stock
+                stock_qty = line.product_id.virtual_available
+                
+                if line.product_uom_qty > stock_qty:
+                    order.stock_warning_banner = _('<div class="alert alert-danger" role="alert">⚠️ <b>Stock Alert (Sales):</b> Quantity exceeds available stock (%s).</div>') % stock_qty
+                    break
 
     def action_confirm(self):
         _logger.info(">>>>>>>>> VALIDATE SALE (action_confirm) - START <<<<<<<<<<")
@@ -107,20 +149,41 @@ class SaleOrder(models.Model):
 
             for line in order.order_line:
                 if line.product_uom_qty <= 0:
-                     raise ValidationError(_("Cannot confirm sale: The quantity for product %s is 0 or negative.") % line.product_id.name)
+                    raise ValidationError(_("Cannot confirm sale: The quantity for product %s is 0 or negative.") % line.product_id.name)
                 if line.price_unit <= 0:
-                     raise ValidationError(_("Cannot confirm sale: The price for product %s is 0 or negative.") % line.product_id.name)
+                    raise ValidationError(_("Cannot confirm sale: The price for product %s is 0 or negative.") % line.product_id.name)
 
-                if line.product_id.type != 'service':
-                    if order.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+                product_type = line.product_id.type
+                is_restricted = False
+                if product_type == 'product' and order.company_id.sale_restrict_storable:
+                    is_restricted = True
+                elif product_type == 'consu' and order.company_id.sale_restrict_consumable:
+                    is_restricted = True
+                elif product_type == 'service' and order.company_id.sale_restrict_service:
+                    is_restricted = True
+                
+                if not is_restricted:
+                    continue
+
+                if not order.company_id.strict_stock_validation:
+                    if line.product_id.invoice_policy == 'delivery':
                         continue
-                    if order.company_id.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+
+                # Always use Forecasted Stock
+                stock_qty = line.product_id.virtual_available
+                
+                if line.product_uom_qty > stock_qty:
+                    raise ValidationError(_("Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.product_uom_qty, stock_qty))
+
+            # Check for Duplicate Lines (Configurable)
+            if order.company_id.sale_restrict_duplicate:
+                product_counts = {}
+                for line in order.order_line:
+                    if not line.product_id:
                         continue
-                    # Always use Forecasted Stock
-                    stock_qty = line.product_id.virtual_available
-                    
-                    if line.product_uom_qty > stock_qty:
-                         raise ValidationError(_("Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.product_uom_qty, stock_qty))
+                    if line.product_id.id in product_counts:
+                        raise ValidationError(_("Duplicate Line Restriction: Product %s is present multiple times in the sale order.") % line.product_id.name)
+                    product_counts[line.product_id.id] = True
         
         return super(SaleOrder, self).action_confirm()
 
@@ -131,13 +194,43 @@ class SaleOrderLine(models.Model):
 
     qty_on_hand_check = fields.Float(compute='_compute_qty_on_hand_check', store=False)
 
-    @api.depends('product_id')
+    @api.depends('product_id', 'order_id.company_id', 'company_id')
     def _compute_qty_on_hand_check(self):
         for line in self:
-            if line.product_id:
-                line.qty_on_hand_check = line.product_id.virtual_available
-            else:
+            if not line.product_id:
                 line.qty_on_hand_check = 0.0
+                continue
+
+            # Default to Forecasted Stock
+            stock_qty = line.product_id.virtual_available
+            
+            # Check Config to see if we should enforce restriction (return real stock) or bypass (return Infinity)
+            company = line.company_id or line.order_id.company_id or self.env.company
+            
+            if not company.restrict_zero_sale:
+                line.qty_on_hand_check = 999999999.0
+                continue
+
+            product_type = line.product_id.type
+            is_restricted = False
+            if product_type == 'product' and company.sale_restrict_storable:
+                is_restricted = True
+            elif product_type == 'consu' and company.sale_restrict_consumable:
+                is_restricted = True
+            elif product_type == 'service' and company.sale_restrict_service:
+                is_restricted = True
+            
+            if not is_restricted:
+                line.qty_on_hand_check = 999999999.0
+                continue
+
+            if not company.strict_stock_validation:
+                if line.product_id.invoice_policy == 'delivery':
+                    line.qty_on_hand_check = 999999999.0
+                    continue
+
+            # If restricted, return actual Forecasted Stock
+            line.qty_on_hand_check = stock_qty
 
     @api.onchange('product_id', 'product_uom_qty')
     def _onchange_product_id_check_stock(self):
@@ -147,14 +240,44 @@ class SaleOrderLine(models.Model):
             
             # Check Config - Use company_id directly if possible or env user company as fallback context
             company = line.company_id or line.order_id.company_id or self.env.company
+
+            # 0. Live Duplicate Check (Memory/Compute)
+            if company.sale_restrict_duplicate:
+                # Check if product exists in other lines (excluding self if possible, though new line ID might be NewId)
+                # In onchange, we iterate over the virtual records in order_id.order_line
+                duplicate_count = 0
+                for other_line in line.order_id.order_line:
+                    if other_line.product_id == line.product_id:
+                        duplicate_count += 1
+                
+                # If count > 1, it means we have the current line plus at least one more
+                if duplicate_count > 1:
+                    line.product_id = False
+                    return {
+                        'warning': {
+                            'title': _("Duplicate Product"),
+                            'message': _("This product is already present in the order. Duplicate lines are not allowed.")
+                        }
+                    }
+
             if not company.restrict_zero_sale:
                 return
 
-            if company.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+            product_type = line.product_id.type
+            is_restricted = False
+            if product_type == 'product' and company.sale_restrict_storable:
+                is_restricted = True
+            elif product_type == 'consu' and company.sale_restrict_consumable:
+                is_restricted = True
+            elif product_type == 'service' and company.sale_restrict_service:
+                is_restricted = True
+            
+            if not is_restricted:
                 return
 
-            if company.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
-                return
+            if not company.strict_stock_validation:
+                if line.product_id.invoice_policy == 'delivery':
+                    return
 
             # Always use Forecasted Stock
             stock_on_hand = line.product_id.virtual_available
@@ -203,13 +326,46 @@ class AccountMoveLine(models.Model):
 
     qty_on_hand_check = fields.Float(compute='_compute_qty_on_hand_check', store=False)
 
-    @api.depends('product_id')
+    @api.depends('product_id', 'move_id.company_id', 'company_id')
     def _compute_qty_on_hand_check(self):
         for line in self:
-            if line.product_id:
-                line.qty_on_hand_check = line.product_id.virtual_available
-            else:
+            if not line.product_id:
                 line.qty_on_hand_check = 0.0
+                continue
+
+            # Default to Forecasted Stock
+            stock_qty = line.product_id.virtual_available
+
+            if line.move_id.move_type not in ('out_invoice', 'out_refund'):
+                 line.qty_on_hand_check = 999999999.0
+                 continue
+
+            # Check Config
+            company = line.company_id or line.move_id.company_id or self.env.company
+            if not company.restrict_zero_invoice:
+                line.qty_on_hand_check = 999999999.0
+                continue
+
+            product_type = line.product_id.type
+            is_restricted = False
+            if product_type == 'product' and company.invoice_restrict_storable:
+                is_restricted = True
+            elif product_type == 'consu' and company.invoice_restrict_consumable:
+                is_restricted = True
+            elif product_type == 'service' and company.invoice_restrict_service:
+                is_restricted = True
+            
+            if not is_restricted:
+                line.qty_on_hand_check = 999999999.0
+                continue
+            
+            if not company.strict_stock_validation:
+                if line.product_id.invoice_policy == 'delivery':
+                    line.qty_on_hand_check = 999999999.0
+                    continue
+
+            # If restricted, return actual Forecasted Stock
+            line.qty_on_hand_check = stock_qty
 
     @api.onchange('product_id', 'quantity')
     def _onchange_product_id_check_stock(self):
@@ -222,14 +378,41 @@ class AccountMoveLine(models.Model):
             
             # Check Config
             company = line.company_id or line.move_id.company_id or self.env.company
+
+            # 0. Live Duplicate Check (Memory/Compute)
+            if company.invoice_restrict_duplicate:
+                duplicate_count = 0
+                for other_line in line.move_id.invoice_line_ids:
+                    if other_line.product_id == line.product_id:
+                        duplicate_count += 1
+                
+                if duplicate_count > 1:
+                    line.product_id = False
+                    return {
+                        'warning': {
+                            'title': _("Duplicate Product"),
+                            'message': _("This product is already present in the invoice. Duplicate lines are not allowed.")
+                        }
+                    }
+
             if not company.restrict_zero_invoice:
                 return
 
-            if company.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
+            product_type = line.product_id.type
+            is_restricted = False
+            if product_type == 'product' and company.invoice_restrict_storable:
+                is_restricted = True
+            elif product_type == 'consu' and company.invoice_restrict_consumable:
+                is_restricted = True
+            elif product_type == 'service' and company.invoice_restrict_service:
+                is_restricted = True
+            
+            if not is_restricted:
                 return
 
-            if company.stock_validation_policy == 'ordered_only' and line.product_id.invoice_policy == 'delivery':
-                return
+            if not company.strict_stock_validation:
+                if line.product_id.invoice_policy == 'delivery':
+                    return
 
             # Always use Forecasted Stock
             stock_on_hand = line.product_id.virtual_available
@@ -289,12 +472,9 @@ class ProductProduct(models.Model):
             return 0
 
         # Check Config
-        # Check Config
         _logger.info(f"[STOCK_CHECK] Product: {self.display_name}, Location: {location.name} ({location.id})")
         
         # Always use Forecasted Stock logic
         qty = self.with_context(location=location.id).virtual_available
         _logger.info(f"[STOCK_CHECK] Forecast Logic -> {qty}")
         return qty
-
-
