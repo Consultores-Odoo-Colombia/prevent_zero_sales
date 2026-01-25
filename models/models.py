@@ -232,17 +232,18 @@ class SaleOrderLine(models.Model):
             # If restricted, return actual Forecasted Stock
             line.qty_on_hand_check = stock_qty
 
-    @api.onchange('product_id', 'product_uom_qty')
-    def _onchange_product_id_check_stock(self):
+    @api.onchange('product_id')
+    def _onchange_product_id_duplicate_check(self):
         for line in self:
-            if not line.product_id or line.product_id.type == 'service':
+            if not line.product_id:
                 continue
             
             # Check Config - Use company_id directly if possible or env user company as fallback context
             company = line.company_id or line.order_id.company_id or self.env.company
 
             # 0. Live Duplicate Check (Memory/Compute)
-            if company.sale_restrict_duplicate:
+            # Must also respect the main "Prevent Zero Sales" toggle
+            if company.restrict_zero_sale and company.sale_restrict_duplicate:
                 # Check if product exists in other lines (excluding self if possible, though new line ID might be NewId)
                 # In onchange, we iterate over the virtual records in order_id.order_line
                 duplicate_count = 0
@@ -259,6 +260,17 @@ class SaleOrderLine(models.Model):
                             'message': _("This product is already present in the order. Duplicate lines are not allowed.")
                         }
                     }
+
+    @api.onchange('product_id', 'product_uom_qty')
+    def _onchange_product_id_check_stock(self):
+        for line in self:
+            if not line.product_id or line.product_id.type == 'service':
+                continue
+            
+            # Check Config - Use company_id directly if possible or env user company as fallback context
+            company = line.company_id or line.order_id.company_id or self.env.company
+
+            # Duplicate Check REMOVED from here to allow quantity updates
 
             if not company.restrict_zero_sale:
                 return
@@ -294,7 +306,10 @@ class SaleOrderLine(models.Model):
                     }
                 }
 
-            # 2. Check Zero/Negative Scok (User Requirement: Delete line)
+            # 2. Check Zero/Negative Stock (User Requirement: Delete line)
+            # We ONLY check this if the user is adding the product (or changing the product), 
+            # NOT necessarily if they are just changing quantity, but the requirement implies strictness.
+            # However, standard behavior is to check on any relevant change.
             if stock_on_hand <= 0:
                  # Clear line
                  line.product_id = False
@@ -367,6 +382,34 @@ class AccountMoveLine(models.Model):
             # If restricted, return actual Forecasted Stock
             line.qty_on_hand_check = stock_qty
 
+    @api.onchange('product_id')
+    def _onchange_product_id_duplicate_check(self):
+        for line in self:
+            if not line.product_id:
+                continue
+            if line.move_id.move_type not in ('out_invoice', 'out_refund'):
+                continue
+            
+            # Check Config
+            company = line.company_id or line.move_id.company_id or self.env.company
+
+            # Must also respect the main "Prevent Zero Invoicing" toggle
+            if company.restrict_zero_invoice and company.invoice_restrict_duplicate:
+                duplicate_count = 0
+                for other_line in line.move_id.invoice_line_ids:
+                    if other_line.product_id == line.product_id:
+                        duplicate_count += 1
+                
+                # If count > 1, it means we have the current line plus at least one more
+                if duplicate_count > 1:
+                    line.product_id = False
+                    return {
+                        'warning': {
+                            'title': _("Duplicate Product"),
+                            'message': _("This product is already present in the invoice. Duplicate lines are not allowed.")
+                        }
+                    }
+
     @api.onchange('product_id', 'quantity')
     def _onchange_product_id_check_stock(self):
         for line in self:
@@ -379,21 +422,7 @@ class AccountMoveLine(models.Model):
             # Check Config
             company = line.company_id or line.move_id.company_id or self.env.company
 
-            # 0. Live Duplicate Check (Memory/Compute)
-            if company.invoice_restrict_duplicate:
-                duplicate_count = 0
-                for other_line in line.move_id.invoice_line_ids:
-                    if other_line.product_id == line.product_id:
-                        duplicate_count += 1
-                
-                if duplicate_count > 1:
-                    line.product_id = False
-                    return {
-                        'warning': {
-                            'title': _("Duplicate Product"),
-                            'message': _("This product is already present in the invoice. Duplicate lines are not allowed.")
-                        }
-                    }
+            # Duplicate Check REMOVED from here
 
             if not company.restrict_zero_invoice:
                 return
