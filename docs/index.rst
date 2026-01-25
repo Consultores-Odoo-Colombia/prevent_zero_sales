@@ -23,6 +23,7 @@ Features
     * **Quantity = 0:** Allowed initially (standard Odoo behavior) but prevents confirmation.
 * **Multi-Policy Support:** Works for both 'Ordered Quantities' and 'Delivered Quantities' invoicing policies.
 * **Strict Server-Side Validation:** Prevents bypassing UI checks on Confirmation/Post.
+* **Duplicate Line Prevention:** Configurable option to prevent adding the same product multiple times in an order or invoice.
 
 Installation
 ------------
