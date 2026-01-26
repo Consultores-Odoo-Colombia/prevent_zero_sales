@@ -3,6 +3,7 @@
 import { SectionAndNoteListRenderer } from "@account/components/section_and_note_fields_backend/section_and_note_fields_backend";
 import { registry } from "@web/core/registry";
 import { listView } from "@web/views/list/list_view";
+import { _t } from "@web/core/l10n/translation";
 
 export class StockRestrictedListRenderer extends SectionAndNoteListRenderer {
     static rowsTemplate = "prevent_zero_sales.StockRestrictedListRenderer.Rows";
@@ -33,7 +34,7 @@ export class StockRestrictedListRenderer extends SectionAndNoteListRenderer {
                 ev.stopPropagation();
                 
                 // Show a generic message because we might be blocking due to ANY bad line
-                 this.notification.add(("Adding products with zero or insufficient stock is not allowed. Please correct existing lines."), {
+                 this.notification.add(_t("Adding products with zero or insufficient stock is not allowed. Please correct existing lines."), {
                     type: "danger",
                     sticky: false,
                 });
