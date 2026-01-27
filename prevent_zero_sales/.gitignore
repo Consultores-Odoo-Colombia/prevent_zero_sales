@@ -52,7 +52,7 @@ coverage.xml
 cover/
 
 # Translations
-*.pot
+*.mo
 
 # Django stuff:
 *.log

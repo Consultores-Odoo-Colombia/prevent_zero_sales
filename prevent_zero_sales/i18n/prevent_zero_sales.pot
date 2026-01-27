@@ -1,0 +1,200 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* prevent_zero_sales
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-24 10:44+0000\n"
+"PO-Revision-Date: 2026-01-24 10:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_product_product
+msgid "Product Variant"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_sale_order_line
+msgid "Sales Order Line"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "<div class=\"alert alert-danger\" role=\"alert\">⚠️ <b>Stock Alert:</b> Requested quantity exceeds available stock (%s).</div>"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "<div class=\"alert alert-danger\" role=\"alert\">⚠️ <b>Stock Alert (Sales):</b> Quantity exceeds available stock (%s).</div>"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Cannot confirm: The quantity for product line %s is 0 or negative."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Cannot confirm: The price for product %s is 0 or negative."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Duplicate Line Restriction: Product %s is present multiple times in the invoice."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Cannot confirm an empty sale order."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Cannot confirm sale: The quantity for product %s is 0 or negative."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Cannot confirm sale: The price for product %s is 0 or negative."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Duplicate Line Restriction: Product %s is present multiple times in the sale order."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Duplicate Product"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "This product is already present in the order. Duplicate lines are not allowed."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "This product is already present in the invoice. Duplicate lines are not allowed."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Invalid Quantity"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Quantity cannot be negative. The product has been removed."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Product Not Available"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "The product has been removed because there is no available stock (%s)."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "Insufficient Stock"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: code:addons/prevent_zero_sales/models/models.py:0
+#, python-format
+msgid "You cannot add more quantity because there is not enough stock. (Available: %s)"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Prevents adding products with zero or negative stock to sales orders."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Prevents adding products with zero or negative stock to customer invoices."
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Stock Restrictions"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Strict Stock Validation"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Restrict Logic"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Storable Products"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Consumable Products"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Services"
+msgstr ""
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Prevent Duplicate Lines (Same Product)"
+msgstr ""
