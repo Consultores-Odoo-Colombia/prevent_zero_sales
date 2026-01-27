@@ -18,6 +18,7 @@
     'license': 'OPL-1',
     'price': 20.00,
     'currency': 'USD',
+    'images': ['static/description/main_screenshot.png'],
 
     # Dependencias necesarias para heredar de account y sale
     'depends': ['base', 'account', 'sale', 'sale_management', 'sale_stock'],
