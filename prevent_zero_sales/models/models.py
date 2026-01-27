@@ -40,6 +40,10 @@ class AccountMove(models.Model):
                             if line.product_id.invoice_policy == 'delivery':
                                 continue
 
+                        # Skip if linked to a Sales Order (Stock already reserved/validated at SO level)
+                        if line.sale_line_ids:
+                            continue
+
                         # Always use Forecasted Stock
                         stock_qty = line.product_id.virtual_available
                         
@@ -82,6 +86,10 @@ class AccountMove(models.Model):
                             if line.product_id.invoice_policy == 'delivery':
                                 continue
 
+                        # Skip if linked to a Sales Order (Stock already reserved/validated at SO level)
+                        if line.sale_line_ids:
+                            continue
+
                         # Always use Forecasted Stock
                         stock_qty = line.product_id.virtual_available
                         
@@ -111,6 +119,10 @@ class SaleOrder(models.Model):
         for order in self:
             order.stock_warning_banner = False
             if not order.company_id.restrict_zero_sale:
+                continue
+
+            # Skip validation if order is already confirmed (Stock reserved)
+            if order.state not in ['draft', 'sent']:
                 continue
 
             for line in order.order_line:
@@ -211,6 +223,11 @@ class SaleOrderLine(models.Model):
                 line.qty_on_hand_check = 999999999.0
                 continue
 
+            # Skip validation if order is already confirmed (Stock reserved)
+            if line.order_id.state not in ['draft', 'sent']:
+                line.qty_on_hand_check = 999999999.0
+                continue
+
             product_type = line.product_id.type
             is_restricted = False
             if product_type == 'product' and company.sale_restrict_storable:
@@ -273,6 +290,10 @@ class SaleOrderLine(models.Model):
             # Duplicate Check REMOVED from here to allow quantity updates
 
             if not company.restrict_zero_sale:
+                return
+
+            # Skip validation if order is already confirmed (Stock reserved)
+            if line.order_id.state not in ['draft', 'sent']:
                 return
 
             product_type = line.product_id.type
@@ -379,6 +400,11 @@ class AccountMoveLine(models.Model):
                     line.qty_on_hand_check = 999999999.0
                     continue
 
+            # Skip if linked to a Sales Order (Stock already reserved/validated at SO level)
+            if line.sale_line_ids:
+                line.qty_on_hand_check = 999999999.0
+                continue
+
             # If restricted, return actual Forecasted Stock
             line.qty_on_hand_check = stock_qty
 
@@ -442,6 +468,10 @@ class AccountMoveLine(models.Model):
             if not company.strict_stock_validation:
                 if line.product_id.invoice_policy == 'delivery':
                     return
+
+            # Skip if linked to a Sales Order (Stock already reserved/validated at SO level)
+            if line.sale_line_ids:
+                return
 
             # Always use Forecasted Stock
             stock_on_hand = line.product_id.virtual_available
