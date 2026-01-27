@@ -484,26 +484,4 @@ class AccountMoveLine(models.Model):
          pass
 
 
-class ProductProduct(models.Model):
-    _inherit = 'product.product'
 
-    def action_get_warehouse_quant(self, pos_config_id):
-        self.ensure_one()
-        # Only exclude services. Restrict 'product' (storable) and 'consu' (consumable)
-        if self.type == 'service':
-            return 999999
-
-        pos_config = self.env['pos.config'].browse(pos_config_id)
-        # Use the source location of the operation type (POS stock location)
-        location = pos_config.picking_type_id.default_location_src_id
-        
-        if not location:
-            return 0
-
-        # Check Config
-        _logger.info(f"[STOCK_CHECK] Product: {self.display_name}, Location: {location.name} ({location.id})")
-        
-        # Always use Forecasted Stock logic
-        qty = self.with_context(location=location.id).virtual_available
-        _logger.info(f"[STOCK_CHECK] Forecast Logic -> {qty}")
-        return qty
