@@ -7,7 +7,7 @@
                 <td t-if="withHandleColumn"/>
                 <td t-att-colspan="withHandleColumn ? nbCols - 1 : nbCols" class="text-center text-danger fw-bold">
                     <i class="fa fa-exclamation-triangle me-2"/>
-                    Adding products with zero or insufficient stock is not allowed. Please correct existing lines.
+                    No se permite agregar productos con stock cero o insuficiente. Por favor corrija las líneas existentes.
                 </td>
             </tr>
         </xpath>

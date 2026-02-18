@@ -19,7 +19,7 @@ class AccountMove(models.Model):
             if not move.company_id.restrict_zero_invoice:
                 continue
 
-            if move.move_type in ['out_invoice', 'out_refund']:
+            if move.move_type == 'out_invoice':
                 for line in move.invoice_line_ids:
                     if line.display_type == 'product' or (not line.display_type and line.product_id):
                         # Config check: only warn if restricted
@@ -27,7 +27,7 @@ class AccountMove(models.Model):
                         is_restricted = False
                         if product_type == 'product' and move.company_id.invoice_restrict_storable:
                             is_restricted = True
-                        elif product_type == 'consu' and move.company_id.invoice_restrict_consumable:
+                        elif product_type in ['consu', 'combo'] and move.company_id.invoice_restrict_consumable:
                             is_restricted = True
                         elif product_type == 'service' and move.company_id.invoice_restrict_service:
                             is_restricted = True
@@ -58,52 +58,57 @@ class AccountMove(models.Model):
             if not move.company_id.restrict_zero_invoice:
                 continue
 
-            if move.move_type in ['out_invoice', 'out_refund']:
+            # Only validate Customer Invoices (not Credit Notes/Refunds)
+            # Credit notes are returns, so they INCREASE inventory and don't need stock validation
+            if move.move_type == 'out_invoice':
                 for line in move.invoice_line_ids:
                     # Validate product lines
                     if line.display_type == 'product' or (not line.display_type and line.product_id):
                         # Basic quantity/price set checks
                         if line.quantity <= 0:
-                            raise ValidationError(_("Cannot confirm: The quantity for product line %s is 0 or negative.") % line.product_id.name)
+                            raise ValidationError(_("Cannot confirm: Quantity for product %s is 0 or negative.") % line.product_id.name)
                         if line.price_unit <= 0:
-                            raise ValidationError(_("Cannot confirm: The price for product %s is 0 or negative.") % line.product_id.name)
+                            raise ValidationError(_("Cannot confirm: Price for product %s is 0 or negative.") % line.product_id.name)
                         
                         # Stock Check
-                        product_type = line.product_id.type
-                        is_restricted = False
-                        if product_type == 'product' and move.company_id.invoice_restrict_storable:
-                            is_restricted = True
-                        elif product_type == 'consu' and move.company_id.invoice_restrict_consumable:
-                            is_restricted = True
-                        elif product_type == 'service' and move.company_id.invoice_restrict_service:
-                            is_restricted = True
+                        stock_check_applicable = move.move_type == 'out_invoice'
                         
-                        if not is_restricted:
-                            continue
-
-                        # Check Policy
-                        if not move.company_id.strict_stock_validation:
-                            if line.product_id.invoice_policy == 'delivery':
+                        if stock_check_applicable:
+                            product_type = line.product_id.type
+                            is_restricted = False
+                            if product_type == 'product' and move.company_id.invoice_restrict_storable:
+                                is_restricted = True
+                            elif product_type in ['consu', 'combo'] and move.company_id.invoice_restrict_consumable:
+                                is_restricted = True
+                            elif product_type == 'service' and move.company_id.invoice_restrict_service:
+                                is_restricted = True
+                            
+                            if not is_restricted:
                                 continue
 
-                        # Skip if linked to a Sales Order (Stock already reserved/validated at SO level)
-                        if line.sale_line_ids:
-                            continue
+                            # Check Policy
+                            if not move.company_id.strict_stock_validation:
+                                if line.product_id.invoice_policy == 'delivery':
+                                    continue
 
-                        # Always use Forecasted Stock
-                        stock_qty = line.product_id.virtual_available
-                        
-                        if line.quantity > stock_qty:
-                            raise ValidationError(_("Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.quantity, stock_qty))
+                            # Skip if linked to a Sales Order (Stock already reserved/validated at SO level)
+                            if line.sale_line_ids:
+                                continue
+
+                            # Always use Forecasted Stock
+                            stock_qty = line.product_id.virtual_available
+                            
+                            if line.quantity > stock_qty:
+                                raise ValidationError(_("Active Restriction: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.quantity, stock_qty))
             
-            # Check for Duplicate Lines (Configurable)
-            if move.company_id.invoice_restrict_duplicate:
+            # Check for Duplicate Lines (Configurable) - Only for Customer Invoices
+            if move.move_type == 'out_invoice' and move.company_id.invoice_restrict_duplicate:
                 product_counts = {}
                 for line in move.invoice_line_ids:
                     if not line.product_id:
                         continue
                     if line.product_id.id in product_counts:
-                        raise ValidationError(_("Duplicate Line Restriction: Product %s is present multiple times in the invoice.") % line.product_id.name)
+                        raise ValidationError(_("Duplicate Lines Restriction: Product %s appears multiple times in the invoice.") % line.product_id.name)
                     product_counts[line.product_id.id] = True
         
         return super(AccountMove, self).action_post()
@@ -126,11 +131,13 @@ class SaleOrder(models.Model):
                 continue
 
             for line in order.order_line:
+                if line.display_type or not line.product_id:
+                    continue
                 product_type = line.product_id.type
                 is_restricted = False
                 if product_type == 'product' and order.company_id.sale_restrict_storable:
                     is_restricted = True
-                elif product_type == 'consu' and order.company_id.sale_restrict_consumable:
+                elif product_type in ['consu', 'combo'] and order.company_id.sale_restrict_consumable:
                     is_restricted = True
                 elif product_type == 'service' and order.company_id.sale_restrict_service:
                     is_restricted = True
@@ -157,19 +164,22 @@ class SaleOrder(models.Model):
                 continue
 
             if not order.order_line:
-                raise ValidationError(_("Cannot confirm an empty sale order."))
+                raise ValidationError(_("Cannot confirm an empty sales order."))
 
             for line in order.order_line:
+                if line.display_type or not line.product_id:
+                    continue
+
                 if line.product_uom_qty <= 0:
-                    raise ValidationError(_("Cannot confirm sale: The quantity for product %s is 0 or negative.") % line.product_id.name)
+                    raise ValidationError(_("Cannot confirm sale: Quantity for product %s is 0 or negative.") % line.product_id.name)
                 if line.price_unit <= 0:
-                    raise ValidationError(_("Cannot confirm sale: The price for product %s is 0 or negative.") % line.product_id.name)
+                    raise ValidationError(_("Cannot confirm sale: Price for product %s is 0 or negative.") % line.product_id.name)
 
                 product_type = line.product_id.type
                 is_restricted = False
                 if product_type == 'product' and order.company_id.sale_restrict_storable:
                     is_restricted = True
-                elif product_type == 'consu' and order.company_id.sale_restrict_consumable:
+                elif product_type in ['consu', 'combo'] and order.company_id.sale_restrict_consumable:
                     is_restricted = True
                 elif product_type == 'service' and order.company_id.sale_restrict_service:
                     is_restricted = True
@@ -185,7 +195,7 @@ class SaleOrder(models.Model):
                 stock_qty = line.product_id.virtual_available
                 
                 if line.product_uom_qty > stock_qty:
-                    raise ValidationError(_("Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.product_uom_qty, stock_qty))
+                    raise ValidationError(_("Active Restriction: Not enough stock for product %s. (Requested: %s, Available: %s)") % (line.product_id.name, line.product_uom_qty, stock_qty))
 
             # Check for Duplicate Lines (Configurable)
             if order.company_id.sale_restrict_duplicate:
@@ -194,7 +204,7 @@ class SaleOrder(models.Model):
                     if not line.product_id:
                         continue
                     if line.product_id.id in product_counts:
-                        raise ValidationError(_("Duplicate Line Restriction: Product %s is present multiple times in the sale order.") % line.product_id.name)
+                        raise ValidationError(_("Duplicate Lines Restriction: Product %s appears multiple times in the sales order.") % line.product_id.name)
                     product_counts[line.product_id.id] = True
         
         return super(SaleOrder, self).action_confirm()
@@ -232,7 +242,7 @@ class SaleOrderLine(models.Model):
             is_restricted = False
             if product_type == 'product' and company.sale_restrict_storable:
                 is_restricted = True
-            elif product_type == 'consu' and company.sale_restrict_consumable:
+            elif product_type in ['consu', 'combo'] and company.sale_restrict_consumable:
                 is_restricted = True
             elif product_type == 'service' and company.sale_restrict_service:
                 is_restricted = True
@@ -300,7 +310,7 @@ class SaleOrderLine(models.Model):
             is_restricted = False
             if product_type == 'product' and company.sale_restrict_storable:
                 is_restricted = True
-            elif product_type == 'consu' and company.sale_restrict_consumable:
+            elif product_type in ['consu', 'combo'] and company.sale_restrict_consumable:
                 is_restricted = True
             elif product_type == 'service' and company.sale_restrict_service:
                 is_restricted = True
@@ -317,13 +327,13 @@ class SaleOrderLine(models.Model):
             
             # 1. Check Negative Quantity (User Requirement: Delete line if negative)
             # Allow 0 initially (Odoo default), invalid 0 will be blocked on confirm.
-            if line.product_uom_qty < 0:
+            if line.product_uom_qty <= 0:
                  line.product_id = False
                  line.product_uom_qty = 0
                  return {
                     'warning': {
                         'title': _("Invalid Quantity"),
-                        'message': _("Quantity cannot be negative. The product has been removed.")
+                        'message': _("Quantity must be greater than 0. The product has been removed.")
                     }
                 }
 
@@ -348,7 +358,7 @@ class SaleOrderLine(models.Model):
                  return {
                     'warning': {
                         'title': _("Insufficient Stock"),
-                        'message': _("You cannot add more quantity because there is not enough stock. (Available: %s)") % stock_on_hand
+                        'message': _("Cannot add more quantity because there is not enough stock. (Available: %s)") % stock_on_hand
                     }
                 }
 
@@ -372,7 +382,7 @@ class AccountMoveLine(models.Model):
             # Default to Forecasted Stock
             stock_qty = line.product_id.virtual_available
 
-            if line.move_id.move_type not in ('out_invoice', 'out_refund'):
+            if line.move_id.move_type != 'out_invoice':
                  line.qty_on_hand_check = 999999999.0
                  continue
 
@@ -386,7 +396,7 @@ class AccountMoveLine(models.Model):
             is_restricted = False
             if product_type == 'product' and company.invoice_restrict_storable:
                 is_restricted = True
-            elif product_type == 'consu' and company.invoice_restrict_consumable:
+            elif product_type in ['consu', 'combo'] and company.invoice_restrict_consumable:
                 is_restricted = True
             elif product_type == 'service' and company.invoice_restrict_service:
                 is_restricted = True
@@ -413,7 +423,8 @@ class AccountMoveLine(models.Model):
         for line in self:
             if not line.product_id:
                 continue
-            if line.move_id.move_type not in ('out_invoice', 'out_refund'):
+            # Only check for Customer Invoices, not Credit Notes (returns)
+            if line.move_id.move_type != 'out_invoice':
                 continue
             
             # Check Config
@@ -439,10 +450,12 @@ class AccountMoveLine(models.Model):
     @api.onchange('product_id', 'quantity')
     def _onchange_product_id_check_stock(self):
         for line in self:
-            if not line.product_id or line.product_id.type == 'service':
+            if not line.product_id:
                 continue
             
-            if line.move_id.move_type not in ('out_invoice', 'out_refund'):
+            # Only validate Customer Invoices (not Credit Notes/Refunds)
+            # Credit notes are returns and should not have stock restrictions
+            if line.move_id.move_type != 'out_invoice':
                 continue
             
             # Check Config
@@ -457,7 +470,7 @@ class AccountMoveLine(models.Model):
             is_restricted = False
             if product_type == 'product' and company.invoice_restrict_storable:
                 is_restricted = True
-            elif product_type == 'consu' and company.invoice_restrict_consumable:
+            elif product_type in ['consu', 'combo'] and company.invoice_restrict_consumable:
                 is_restricted = True
             elif product_type == 'service' and company.invoice_restrict_service:
                 is_restricted = True
@@ -478,13 +491,13 @@ class AccountMoveLine(models.Model):
             
             # 1. Check Negative Quantity (User Requirement: Delete line if negative)
             # Allow 0 initially (Odoo default), invalid 0 will be blocked on confirm.
-            if line.quantity < 0:
+            if line.quantity <= 0:
                  line.product_id = False
                  line.quantity = 0
                  return {
                     'warning': {
                         'title': _("Invalid Quantity"),
-                        'message': _("Quantity cannot be negative. The product has been removed.")
+                        'message': _("Quantity must be greater than 0. The product has been removed.")
                     }
                 }
 
@@ -505,13 +518,10 @@ class AccountMoveLine(models.Model):
                  return {
                     'warning': {
                         'title': _("Insufficient Stock"),
-                        'message': _("You cannot add more quantity because there is not enough stock. (Available: %s)") % stock_on_hand
+                        'message': _("Cannot add more quantity because there is not enough stock. (Available: %s)") % stock_on_hand
                     }
                 }
 
     @api.constrains('quantity', 'price_unit', 'product_id')
     def _check_strict_values_and_stock_invoice(self):
          pass
-
-
-
