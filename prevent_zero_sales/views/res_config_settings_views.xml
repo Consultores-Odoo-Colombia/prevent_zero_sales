@@ -18,7 +18,7 @@
                                     <field name="strict_stock_validation"/>
                                 </div>
                                 <div class="row mt16">
-                                    <span class="col-lg-3 o_light_label">Restrict Logic</span>
+                                    <span class="col-lg-3 o_light_label">Restriction Logic</span>
                                     <div class="d-flex flex-column">
                                         <div class="d-flex">
                                             <field name="sale_restrict_storable" class="mr-2"/>
@@ -26,7 +26,7 @@
                                         </div>
                                         <div class="d-flex">
                                             <field name="sale_restrict_consumable" class="mr-2"/>
-                                            <label for="sale_restrict_consumable" string="Consumable Products"/>
+                                            <label for="sale_restrict_consumable" string="Combos"/>
                                         </div>
                                         <div class="d-flex">
                                             <field name="sale_restrict_service" class="mr-2"/>
@@ -52,7 +52,7 @@
                             <field name="restrict_zero_invoice"/>
                             <div class="content-group" invisible="not restrict_zero_invoice">
                                 <div class="row mt16">
-                                    <span class="col-lg-3 o_light_label">Restrict Logic</span>
+                                    <span class="col-lg-3 o_light_label">Restriction Logic</span>
                                     <div class="d-flex flex-column">
                                         <div class="d-flex">
                                             <field name="invoice_restrict_storable" class="mr-2"/>
@@ -60,7 +60,7 @@
                                         </div>
                                         <div class="d-flex">
                                             <field name="invoice_restrict_consumable" class="mr-2"/>
-                                            <label for="invoice_restrict_consumable" string="Consumable Products"/>
+                                            <label for="invoice_restrict_consumable" string="Combos"/>
                                         </div>
                                         <div class="d-flex">
                                             <field name="invoice_restrict_service" class="mr-2"/>

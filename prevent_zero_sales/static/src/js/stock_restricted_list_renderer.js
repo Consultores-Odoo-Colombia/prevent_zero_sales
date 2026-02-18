@@ -34,7 +34,7 @@ export class StockRestrictedListRenderer extends SectionAndNoteListRenderer {
                 ev.stopPropagation();
                 
                 // Show a generic message because we might be blocking due to ANY bad line
-                 this.notification.add(_t("Adding products with zero or insufficient stock is not allowed. Please correct existing lines."), {
+                 this.notification.add(_t("No se permite agregar productos con stock cero o insuficiente. Por favor corrija las líneas existentes."), {
                     type: "danger",
                     sticky: false,
                 });

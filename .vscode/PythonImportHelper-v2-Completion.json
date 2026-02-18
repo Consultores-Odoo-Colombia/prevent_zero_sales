@@ -1,0 +1,138 @@
+[
+    {
+        "label": "models",
+        "importPath": "odoo",
+        "description": "odoo",
+        "isExtraImport": true,
+        "detail": "odoo",
+        "documentation": {}
+    },
+    {
+        "label": "fields",
+        "importPath": "odoo",
+        "description": "odoo",
+        "isExtraImport": true,
+        "detail": "odoo",
+        "documentation": {}
+    },
+    {
+        "label": "api",
+        "importPath": "odoo",
+        "description": "odoo",
+        "isExtraImport": true,
+        "detail": "odoo",
+        "documentation": {}
+    },
+    {
+        "label": "_",
+        "importPath": "odoo",
+        "description": "odoo",
+        "isExtraImport": true,
+        "detail": "odoo",
+        "documentation": {}
+    },
+    {
+        "label": "models",
+        "importPath": "odoo",
+        "description": "odoo",
+        "isExtraImport": true,
+        "detail": "odoo",
+        "documentation": {}
+    },
+    {
+        "label": "fields",
+        "importPath": "odoo",
+        "description": "odoo",
+        "isExtraImport": true,
+        "detail": "odoo",
+        "documentation": {}
+    },
+    {
+        "label": "api",
+        "importPath": "odoo",
+        "description": "odoo",
+        "isExtraImport": true,
+        "detail": "odoo",
+        "documentation": {}
+    },
+    {
+        "label": "ValidationError",
+        "importPath": "odoo.exceptions",
+        "description": "odoo.exceptions",
+        "isExtraImport": true,
+        "detail": "odoo.exceptions",
+        "documentation": {}
+    },
+    {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "AccountMove",
+        "kind": 6,
+        "importPath": "prevent_zero_sales.models.models",
+        "description": "prevent_zero_sales.models.models",
+        "peekOfCode": "class AccountMove(models.Model):\n    _inherit = 'account.move'\n    stock_warning_banner = fields.Html(compute='_compute_stock_warning_banner')\n    @api.depends('invoice_line_ids.quantity', 'invoice_line_ids.product_id', 'invoice_line_ids.product_id.virtual_available')\n    def _compute_stock_warning_banner(self):\n        for move in self:\n            move.stock_warning_banner = False\n            # Check Config\n            if not move.company_id.restrict_zero_invoice:\n                continue",
+        "detail": "prevent_zero_sales.models.models",
+        "documentation": {}
+    },
+    {
+        "label": "SaleOrder",
+        "kind": 6,
+        "importPath": "prevent_zero_sales.models.models",
+        "description": "prevent_zero_sales.models.models",
+        "peekOfCode": "class SaleOrder(models.Model):\n    _inherit = 'sale.order'\n    stock_warning_banner = fields.Html(compute='_compute_stock_warning_banner')\n    @api.depends('order_line.product_uom_qty', 'order_line.product_id', 'order_line.product_id.virtual_available')\n    def _compute_stock_warning_banner(self):\n        for order in self:\n            order.stock_warning_banner = False\n            if not order.company_id.restrict_zero_sale:\n                continue\n            # Skip validation if order is already confirmed (Stock reserved)",
+        "detail": "prevent_zero_sales.models.models",
+        "documentation": {}
+    },
+    {
+        "label": "SaleOrderLine",
+        "kind": 6,
+        "importPath": "prevent_zero_sales.models.models",
+        "description": "prevent_zero_sales.models.models",
+        "peekOfCode": "class SaleOrderLine(models.Model):\n    _inherit = 'sale.order.line'\n    qty_on_hand_check = fields.Float(compute='_compute_qty_on_hand_check', store=False)\n    @api.depends('product_id', 'order_id.company_id', 'company_id')\n    def _compute_qty_on_hand_check(self):\n        for line in self:\n            if not line.product_id:\n                line.qty_on_hand_check = 0.0\n                continue\n            # Default to Forecasted Stock",
+        "detail": "prevent_zero_sales.models.models",
+        "documentation": {}
+    },
+    {
+        "label": "AccountMoveLine",
+        "kind": 6,
+        "importPath": "prevent_zero_sales.models.models",
+        "description": "prevent_zero_sales.models.models",
+        "peekOfCode": "class AccountMoveLine(models.Model):\n    _inherit = 'account.move.line'\n    qty_on_hand_check = fields.Float(compute='_compute_qty_on_hand_check', store=False)\n    @api.depends('product_id', 'move_id.company_id', 'company_id')\n    def _compute_qty_on_hand_check(self):\n        for line in self:\n            if not line.product_id:\n                line.qty_on_hand_check = 0.0\n                continue\n            # Default to Forecasted Stock",
+        "detail": "prevent_zero_sales.models.models",
+        "documentation": {}
+    },
+    {
+        "label": "_logger",
+        "kind": 5,
+        "importPath": "prevent_zero_sales.models.models",
+        "description": "prevent_zero_sales.models.models",
+        "peekOfCode": "_logger = logging.getLogger(__name__)\nclass AccountMove(models.Model):\n    _inherit = 'account.move'\n    stock_warning_banner = fields.Html(compute='_compute_stock_warning_banner')\n    @api.depends('invoice_line_ids.quantity', 'invoice_line_ids.product_id', 'invoice_line_ids.product_id.virtual_available')\n    def _compute_stock_warning_banner(self):\n        for move in self:\n            move.stock_warning_banner = False\n            # Check Config\n            if not move.company_id.restrict_zero_invoice:",
+        "detail": "prevent_zero_sales.models.models",
+        "documentation": {}
+    },
+    {
+        "label": "ResCompany",
+        "kind": 6,
+        "importPath": "prevent_zero_sales.models.res_config_settings",
+        "description": "prevent_zero_sales.models.res_config_settings",
+        "peekOfCode": "class ResCompany(models.Model):\n    _inherit = 'res.company'\n    restrict_zero_sale = fields.Boolean(\"Prevent Zero Sales\", default=True)\n    restrict_zero_invoice = fields.Boolean(\"Prevent Zero Invoicing\", default=True)\n    restrict_zero_pos = fields.Boolean(\"Prevent Zero POS\", default=True)\n    # New Restrictions\n    strict_stock_validation = fields.Boolean(\"Strict Stock Validation\", default=True, help=\"If checked, restrictions apply to both Ordered and Delivered quantities. If unchecked, only Ordered quantities are restricted.\")\n    sale_restrict_storable = fields.Boolean(\"Restrict Storable (Sales)\", default=True)\n    sale_restrict_consumable = fields.Boolean(\"Restrict Consumables (Sales)\", default=False)\n    sale_restrict_service = fields.Boolean(\"Restrict Services (Sales)\", default=False)",
+        "detail": "prevent_zero_sales.models.res_config_settings",
+        "documentation": {}
+    },
+    {
+        "label": "ResConfigSettings",
+        "kind": 6,
+        "importPath": "prevent_zero_sales.models.res_config_settings",
+        "description": "prevent_zero_sales.models.res_config_settings",
+        "peekOfCode": "class ResConfigSettings(models.TransientModel):\n    _inherit = 'res.config.settings'\n    restrict_zero_sale = fields.Boolean(related='company_id.restrict_zero_sale', readonly=False, string=\"Prevent Sales with Zero/Negative Stock\")\n    restrict_zero_invoice = fields.Boolean(related='company_id.restrict_zero_invoice', readonly=False, string=\"Prevent Invoices with Zero/Negative Stock\")\n    restrict_zero_pos = fields.Boolean(related='company_id.restrict_zero_pos', readonly=False, string=\"Prevent POS with Zero/Negative Stock\")\n    strict_stock_validation = fields.Boolean(related='company_id.strict_stock_validation', readonly=False, string=\"Strict Stock Validation (Ordered and Delivered)\")\n    sale_restrict_storable = fields.Boolean(related='company_id.sale_restrict_storable', readonly=False, string=\"Restrict Storable Products\")\n    sale_restrict_consumable = fields.Boolean(related='company_id.sale_restrict_consumable', readonly=False, string=\"Restrict Consumable Products\")\n    sale_restrict_service = fields.Boolean(related='company_id.sale_restrict_service', readonly=False, string=\"Restrict Service Products\")\n    sale_restrict_duplicate = fields.Boolean(related='company_id.sale_restrict_duplicate', readonly=False, string=\"Prevent Duplicate Lines\")",
+        "detail": "prevent_zero_sales.models.res_config_settings",
+        "documentation": {}
+    }
+]
