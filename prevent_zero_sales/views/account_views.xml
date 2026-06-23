@@ -6,6 +6,19 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
+                <!-- Lock de borrador: botón de desbloqueo y distintivo "Locked" -->
+                <xpath expr="//header" position="inside">
+                    <field name="pzs_draft_locked" invisible="1"/>
+                    <button name="action_pzs_unlock_draft" type="object"
+                            string="Unlock" class="btn-secondary"
+                            groups="account.group_account_manager"
+                            invisible="not pzs_draft_locked or state != 'draft'"/>
+                </xpath>
+                <xpath expr="//sheet" position="inside">
+                    <widget name="web_ribbon" title="Locked" bg_color="text-bg-warning"
+                            invisible="not pzs_draft_locked or state != 'draft'"/>
+                </xpath>
+
                 <!-- Add Blocking Banner at the top of the invoice lines page -->
                 <xpath expr="//field[@name='invoice_line_ids']" position="before">
                     <field name="stock_warning_banner" nolabel="1" colspan="2"/>
@@ -13,6 +26,11 @@
 
                 <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='product_id']" position="after">
                     <field name="qty_on_hand_check" column_invisible="True"/>
+                </xpath>
+
+                <!-- Resaltar en rojo las líneas de productos sin stock disponible -->
+                <xpath expr="//field[@name='invoice_line_ids']/list" position="attributes">
+                    <attribute name="decoration-danger">product_id and qty_on_hand_check &lt;= 0</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='invoice_line_ids']" position="attributes">

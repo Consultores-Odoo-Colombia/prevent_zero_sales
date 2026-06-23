@@ -1,8 +1,6 @@
 /** @odoo-module **/
 
 import { SectionAndNoteListRenderer } from "@account/components/section_and_note_fields_backend/section_and_note_fields_backend";
-import { registry } from "@web/core/registry";
-import { listView } from "@web/views/list/list_view";
 import { _t } from "@web/core/l10n/translation";
 
 export class StockRestrictedListRenderer extends SectionAndNoteListRenderer {
@@ -24,48 +22,40 @@ export class StockRestrictedListRenderer extends SectionAndNoteListRenderer {
     }
 
     async onCellKeydown(ev, record, column) {
-        // Intercept Enter and Tab to prevent "Save & New" if stock is invalid
-        // console.log("[StockRestricted] onCellKeydown:", ev.key, "Record:", record);
+        // Intercept Enter and Tab to prevent "Save & New" while a line has no
+        // available stock (quantity auto-set to 0). Quantities over the limit are
+        // capped automatically, so the only blocking case left is out-of-stock.
+        // shouldBlockCreation() scans every record, so it works even when
+        // `record` is undefined in some contexts.
         if (ev.key === "Enter" || ev.key === "Tab") {
-             // We rely on shouldBlockCreation() because it iterates all records (including the current one if it's in the list)
-             // and checks for any violation. This bypasses the issue of 'record' being undefined in some contexts.
-             if (this.shouldBlockCreation()) {
+            if (this.shouldBlockCreation()) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                
-                // Show a generic message because we might be blocking due to ANY bad line
-                 this.notification.add(_t("No se permite agregar productos con stock cero o insuficiente. Por favor corrija las líneas existentes."), {
-                    type: "danger",
-                    sticky: false,
-                });
+                this.notification.add(
+                    _t("There is a line with no available stock (quantity set to 0). Please resolve it before adding more products."),
+                    { type: "danger", sticky: false }
+                );
                 return;
-             }
+            }
         }
-        
+
         return super.onCellKeydown(ev, record, column);
     }
 
     shouldBlockCreation() {
-        // Iterate over records to check for stock issues
-        // We look for the status set by our widget logic or checking fields directly
+        // Block row creation while any line violates the stock restriction.
+        // qty_on_hand_check is the per-line limit computed server-side
+        // (UNLIMITED_QTY when the line is not restricted).
         for (const record of this.props.list.records) {
             const data = record.data;
-            // Use correct field: qty_on_hand_check
             const limit = data.qty_on_hand_check !== undefined ? data.qty_on_hand_check : (data.virtual_available_at_date || 0);
             const qty = data.quantity || data.qty || data.product_uom_qty || 0;
             const productId = data.product_id;
 
             if (productId && (limit <= 0 || qty > limit)) {
-                return true; 
+                return true;
             }
         }
         return false;
     }
 }
-
-export const stockRestrictedListView = {
-    ...listView,
-    Renderer: StockRestrictedListRenderer,
-};
-
-registry.category("views").add("stock_restricted_list", stockRestrictedListView);

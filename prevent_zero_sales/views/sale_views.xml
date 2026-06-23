@@ -17,6 +17,11 @@
                     <field name="qty_on_hand_check" column_invisible="True"/>
                 </xpath>
 
+                <!-- Resaltar en rojo las líneas de productos sin stock disponible -->
+                <xpath expr="//field[@name='order_line']/list" position="attributes">
+                    <attribute name="decoration-danger">product_id and qty_on_hand_check &lt;= 0</attribute>
+                </xpath>
+
                 <xpath expr="//field[@name='order_line']" position="attributes">
                     <attribute name="widget">stock_restricted_section_and_note_one2many</attribute>
                 </xpath>

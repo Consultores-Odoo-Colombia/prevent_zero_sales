@@ -10,37 +10,59 @@
                 <!-- Sales Settings: Insert after 'Product Catalog' block -->
                 <xpath expr="//block[@name='catalog_setting_container']" position="after">
                     <block title="Stock Restrictions" id="stock_restriction_sale_setting" app="sale">
-                        <setting id="restrict_zero_stock_sale" help="Prevents adding products with zero or negative stock to sales orders.">
+                        <setting id="restrict_zero_stock_sale" help="Enable validation of sales orders on confirmation. Choose below which checks to enforce.">
                             <field name="restrict_zero_sale"/>
                             <div class="content-group" invisible="not restrict_zero_sale">
                                 <div class="row mt16">
-                                    <label for="strict_stock_validation" class="col-lg-3 o_light_label"/>
-                                    <field name="strict_stock_validation"/>
-                                </div>
-                                <div class="row mt16">
-                                    <span class="col-lg-3 o_light_label">Restriction Logic</span>
+                                    <span class="col-lg-3 o_light_label">Validators</span>
                                     <div class="d-flex flex-column">
                                         <div class="d-flex">
-                                            <field name="sale_restrict_storable" class="mr-2"/>
-                                            <label for="sale_restrict_storable" string="Storable Products"/>
+                                            <field name="sale_restrict_qty" class="mr-2"/>
+                                            <label for="sale_restrict_qty" string="Block zero/negative quantity"/>
                                         </div>
                                         <div class="d-flex">
-                                            <field name="sale_restrict_consumable" class="mr-2"/>
-                                            <label for="sale_restrict_consumable" string="Combos"/>
+                                            <field name="sale_restrict_price" class="mr-2"/>
+                                            <label for="sale_restrict_price" string="Block zero/negative price"/>
                                         </div>
                                         <div class="d-flex">
-                                            <field name="sale_restrict_service" class="mr-2"/>
-                                            <label for="sale_restrict_service" string="Services"/>
+                                            <field name="sale_restrict_stock" class="mr-2"/>
+                                            <label for="sale_restrict_stock" string="Block insufficient stock"/>
+                                        </div>
+                                        <div class="d-flex">
+                                            <field name="sale_restrict_duplicate" class="mr-2"/>
+                                            <label for="sale_restrict_duplicate" string="Prevent duplicate lines (same product)"/>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt16">
-                                    <div class="d-flex">
-                                        <field name="sale_restrict_duplicate" class="mr-2"/>
-                                        <label for="sale_restrict_duplicate" string="Prevent Duplicate Lines (Same Product)"/>
+                                <!-- Sub-options for the stock check, only when enabled -->
+                                <div class="content-group mt16" invisible="not sale_restrict_stock">
+                                    <div class="row">
+                                        <label for="strict_stock_validation" class="col-lg-3 o_light_label"/>
+                                        <field name="strict_stock_validation"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <span class="col-lg-3 o_light_label">Apply stock check to</span>
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex">
+                                                <field name="sale_restrict_storable" class="mr-2"/>
+                                                <label for="sale_restrict_storable" string="Storable Products"/>
+                                            </div>
+                                            <div class="d-flex">
+                                                <field name="sale_restrict_consumable" class="mr-2"/>
+                                                <label for="sale_restrict_consumable" string="Consumables / Combos"/>
+                                            </div>
+                                            <div class="d-flex">
+                                                <field name="sale_restrict_service" class="mr-2"/>
+                                                <label for="sale_restrict_service" string="Services"/>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </setting>
+                        <setting id="lock_draft_invoice_from_sale_setting"
+                                 help="Locks customer invoices generated from a sales order while in draft, so they cannot be edited before posting (an authorized user can unlock them).">
+                            <field name="lock_draft_invoice_from_sale"/>
                         </setting>
                     </block>
                 </xpath>
@@ -48,30 +70,52 @@
                 <!-- Invoicing Settings: Insert after 'Customer Invoices' block -->
                  <xpath expr="//block[@id='invoicing_settings']" position="after">
                     <block title="Stock Restrictions" id="stock_restriction_account_setting" app="account">
-                        <setting id="restrict_zero_stock_invoice" help="Prevents adding products with zero or negative stock to customer invoices.">
+                        <setting id="restrict_zero_stock_invoice" help="Enable validation of customer invoices on posting. Choose below which checks to enforce.">
                             <field name="restrict_zero_invoice"/>
                             <div class="content-group" invisible="not restrict_zero_invoice">
                                 <div class="row mt16">
-                                    <span class="col-lg-3 o_light_label">Restriction Logic</span>
+                                    <span class="col-lg-3 o_light_label">Validators</span>
                                     <div class="d-flex flex-column">
                                         <div class="d-flex">
-                                            <field name="invoice_restrict_storable" class="mr-2"/>
-                                            <label for="invoice_restrict_storable" string="Storable Products"/>
+                                            <field name="invoice_restrict_qty" class="mr-2"/>
+                                            <label for="invoice_restrict_qty" string="Block zero/negative quantity"/>
                                         </div>
                                         <div class="d-flex">
-                                            <field name="invoice_restrict_consumable" class="mr-2"/>
-                                            <label for="invoice_restrict_consumable" string="Combos"/>
+                                            <field name="invoice_restrict_price" class="mr-2"/>
+                                            <label for="invoice_restrict_price" string="Block zero/negative price"/>
                                         </div>
                                         <div class="d-flex">
-                                            <field name="invoice_restrict_service" class="mr-2"/>
-                                            <label for="invoice_restrict_service" string="Services"/>
+                                            <field name="invoice_restrict_stock" class="mr-2"/>
+                                            <label for="invoice_restrict_stock" string="Block insufficient stock"/>
+                                        </div>
+                                        <div class="d-flex">
+                                            <field name="invoice_restrict_duplicate" class="mr-2"/>
+                                            <label for="invoice_restrict_duplicate" string="Prevent duplicate lines (same product)"/>
+                                        </div>
+                                        <div class="d-flex">
+                                            <field name="invoice_validate_from_sale" class="mr-2"/>
+                                            <label for="invoice_validate_from_sale" string="Also validate lines coming from a sales order"/>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt16">
-                                    <div class="d-flex">
-                                        <field name="invoice_restrict_duplicate" class="mr-2"/>
-                                        <label for="invoice_restrict_duplicate" string="Prevent Duplicate Lines (Same Product)"/>
+                                <!-- Sub-options for the stock check, only when enabled -->
+                                <div class="content-group mt16" invisible="not invoice_restrict_stock">
+                                    <div class="row">
+                                        <span class="col-lg-3 o_light_label">Apply stock check to</span>
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex">
+                                                <field name="invoice_restrict_storable" class="mr-2"/>
+                                                <label for="invoice_restrict_storable" string="Storable Products"/>
+                                            </div>
+                                            <div class="d-flex">
+                                                <field name="invoice_restrict_consumable" class="mr-2"/>
+                                                <label for="invoice_restrict_consumable" string="Consumables / Combos"/>
+                                            </div>
+                                            <div class="d-flex">
+                                                <field name="invoice_restrict_service" class="mr-2"/>
+                                                <label for="invoice_restrict_service" string="Services"/>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -1,42 +1,71 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import fields, models
 
-class ResCompany(models.Model):
-    _inherit = 'res.company'
-
-    restrict_zero_sale = fields.Boolean("Prevent Zero Sales", default=True)
-    restrict_zero_invoice = fields.Boolean("Prevent Zero Invoicing", default=True)
-    restrict_zero_pos = fields.Boolean("Prevent Zero POS", default=True)
-    
-    # New Restrictions
-    strict_stock_validation = fields.Boolean("Strict Stock Validation", default=True, help="If checked, restrictions apply to both Ordered and Delivered quantities. If unchecked, only Ordered quantities are restricted.")
-    
-    sale_restrict_storable = fields.Boolean("Restrict Storable (Sales)", default=True)
-    sale_restrict_consumable = fields.Boolean("Restrict Consumables (Sales)", default=False)
-    sale_restrict_service = fields.Boolean("Restrict Services (Sales)", default=False)
-    sale_restrict_duplicate = fields.Boolean("Restrict Duplicate Lines (Sales)", default=False)
-
-    invoice_restrict_storable = fields.Boolean("Restrict Storable (Invoices)", default=True)
-    invoice_restrict_consumable = fields.Boolean("Restrict Consumables (Invoices)", default=False)
-    invoice_restrict_service = fields.Boolean("Restrict Services (Invoices)", default=False)
-    invoice_restrict_duplicate = fields.Boolean("Restrict Duplicate Lines (Invoices)", default=False)
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    restrict_zero_sale = fields.Boolean(related='company_id.restrict_zero_sale', readonly=False, string="Prevent Sales with Zero/Negative Stock")
-    restrict_zero_invoice = fields.Boolean(related='company_id.restrict_zero_invoice', readonly=False, string="Prevent Invoices with Zero/Negative Stock")
-    restrict_zero_pos = fields.Boolean(related='company_id.restrict_zero_pos', readonly=False, string="Prevent POS with Zero/Negative Stock")
+    restrict_zero_sale = fields.Boolean(
+        related='company_id.restrict_zero_sale', readonly=False,
+        string="Prevent Sales with Zero/Negative Stock")
+    restrict_zero_invoice = fields.Boolean(
+        related='company_id.restrict_zero_invoice', readonly=False,
+        string="Prevent Invoices with Zero/Negative Stock")
 
-    strict_stock_validation = fields.Boolean(related='company_id.strict_stock_validation', readonly=False, string="Strict Stock Validation (Ordered and Delivered)")
+    strict_stock_validation = fields.Boolean(
+        related='company_id.strict_stock_validation', readonly=False,
+        string="Strict Stock Validation (Ordered and Delivered)")
 
-    sale_restrict_storable = fields.Boolean(related='company_id.sale_restrict_storable', readonly=False, string="Restrict Storable Products")
-    sale_restrict_consumable = fields.Boolean(related='company_id.sale_restrict_consumable', readonly=False, string="Restrict Consumable Products")
-    sale_restrict_service = fields.Boolean(related='company_id.sale_restrict_service', readonly=False, string="Restrict Service Products")
-    sale_restrict_duplicate = fields.Boolean(related='company_id.sale_restrict_duplicate', readonly=False, string="Prevent Duplicate Lines")
+    lock_draft_invoice_from_sale = fields.Boolean(
+        related='company_id.lock_draft_invoice_from_sale', readonly=False,
+        string="Lock Draft Invoices from Sales Orders")
 
-    invoice_restrict_storable = fields.Boolean(related='company_id.invoice_restrict_storable', readonly=False, string="Restrict Storable Products")
-    invoice_restrict_consumable = fields.Boolean(related='company_id.invoice_restrict_consumable', readonly=False, string="Restrict Consumable Products")
-    invoice_restrict_service = fields.Boolean(related='company_id.invoice_restrict_service', readonly=False, string="Restrict Service Products")
-    invoice_restrict_duplicate = fields.Boolean(related='company_id.invoice_restrict_duplicate', readonly=False, string="Prevent Duplicate Lines")
+    sale_restrict_qty = fields.Boolean(
+        related='company_id.sale_restrict_qty', readonly=False,
+        string="Block Zero/Negative Quantity (Sales)")
+    sale_restrict_price = fields.Boolean(
+        related='company_id.sale_restrict_price', readonly=False,
+        string="Block Zero/Negative Price (Sales)")
+    sale_restrict_stock = fields.Boolean(
+        related='company_id.sale_restrict_stock', readonly=False,
+        string="Block Insufficient Stock (Sales)")
+
+    invoice_restrict_qty = fields.Boolean(
+        related='company_id.invoice_restrict_qty', readonly=False,
+        string="Block Zero/Negative Quantity (Invoices)")
+    invoice_restrict_price = fields.Boolean(
+        related='company_id.invoice_restrict_price', readonly=False,
+        string="Block Zero/Negative Price (Invoices)")
+    invoice_restrict_stock = fields.Boolean(
+        related='company_id.invoice_restrict_stock', readonly=False,
+        string="Block Insufficient Stock (Invoices)")
+    invoice_validate_from_sale = fields.Boolean(
+        related='company_id.invoice_validate_from_sale', readonly=False,
+        string="Also Validate Invoice Lines from Sales Orders")
+
+    sale_restrict_storable = fields.Boolean(
+        related='company_id.sale_restrict_storable', readonly=False,
+        string="Restrict Storable Products (Sales)")
+    sale_restrict_consumable = fields.Boolean(
+        related='company_id.sale_restrict_consumable', readonly=False,
+        string="Restrict Consumable Products (Sales)")
+    sale_restrict_service = fields.Boolean(
+        related='company_id.sale_restrict_service', readonly=False,
+        string="Restrict Service Products (Sales)")
+    sale_restrict_duplicate = fields.Boolean(
+        related='company_id.sale_restrict_duplicate', readonly=False,
+        string="Prevent Duplicate Lines (Sales)")
+
+    invoice_restrict_storable = fields.Boolean(
+        related='company_id.invoice_restrict_storable', readonly=False,
+        string="Restrict Storable Products (Invoices)")
+    invoice_restrict_consumable = fields.Boolean(
+        related='company_id.invoice_restrict_consumable', readonly=False,
+        string="Restrict Consumable Products (Invoices)")
+    invoice_restrict_service = fields.Boolean(
+        related='company_id.invoice_restrict_service', readonly=False,
+        string="Restrict Service Products (Invoices)")
+    invoice_restrict_duplicate = fields.Boolean(
+        related='company_id.invoice_restrict_duplicate', readonly=False,
+        string="Prevent Duplicate Lines (Invoices)")

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-24 10:44+0000\n"
-"PO-Revision-Date: 2026-02-03 03:20+0000\n"
+"POT-Creation-Date: 2026-06-11 22:17+0000\n"
+"PO-Revision-Date: 2026-06-11 22:17+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -15,6 +15,161 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "<span class=\"col-lg-3 o_light_label\">Restriction Logic</span>"
+msgstr "<span class=\"col-lg-3 o_light_label\">Lógica de Restricción</span>"
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid ""
+"Active Restriction: Not enough stock for product %(product)s. (Requested: "
+"%(requested)s, Available: %(available)s)"
+msgstr ""
+"Restricción Activa: No hay stock suficiente para el producto %(product)s. "
+"(Solicitado: %(requested)s, Disponible: %(available)s)"
+
+#. module: prevent_zero_sales
+#. odoo-javascript
+#: code:addons/prevent_zero_sales/static/src/js/stock_restricted_list_renderer.js:0
+#: code:addons/prevent_zero_sales/static/src/xml/stock_restricted_list_renderer.xml:0
+msgid ""
+"Adding products with zero or insufficient stock is not allowed. Please fix "
+"the existing lines."
+msgstr ""
+"No se permite agregar productos con stock cero o insuficiente. Por favor "
+"corrija las líneas existentes."
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,help:prevent_zero_sales.field_res_company__restrict_zero_sale
+#: model:ir.model.fields,help:prevent_zero_sales.field_res_config_settings__restrict_zero_sale
+msgid ""
+"Block confirmation of sales orders containing lines with zero or negative "
+"quantity/price, or with insufficient forecasted stock."
+msgstr ""
+"Bloquea la confirmación de pedidos de venta que contengan líneas con "
+"cantidad/precio cero o negativo, o con stock previsto insuficiente."
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,help:prevent_zero_sales.field_res_company__restrict_zero_invoice
+#: model:ir.model.fields,help:prevent_zero_sales.field_res_config_settings__restrict_zero_invoice
+msgid ""
+"Block posting of customer invoices containing lines with zero or negative "
+"quantity/price, or with insufficient forecasted stock."
+msgstr ""
+"Bloquea la publicación de facturas de cliente que contengan líneas con "
+"cantidad/precio cero o negativo, o con stock previsto insuficiente."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid ""
+"Cannot add more quantity because there is not enough stock. (Available: %s)"
+msgstr ""
+"No se puede agregar más cantidad porque no hay stock suficiente. "
+"(Disponible: %s)"
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Cannot confirm an empty sales order."
+msgstr "No se puede confirmar un pedido de venta vacío."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Cannot confirm sale: Price for product %s is 0 or negative."
+msgstr "No se puede confirmar la venta: El precio del producto %s es 0 o negativo."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Cannot confirm sale: Quantity for product %s is 0 or negative."
+msgstr "No se puede confirmar la venta: La cantidad del producto %s es 0 o negativa."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+msgid "Cannot confirm: Price for product %s is 0 or negative."
+msgstr "No se puede confirmar: El precio del producto %s es 0 o negativo."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+msgid "Cannot confirm: Quantity for product %s is 0 or negative."
+msgstr "No se puede confirmar: La cantidad del producto %s es 0 o negativa."
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_res_company
+msgid "Companies"
+msgstr "Compañías"
+
+#. module: prevent_zero_sales
+#: model:ir.model,name:prevent_zero_sales.model_res_config_settings
+msgid "Config Settings"
+msgstr "Ajustes de Configuración"
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Consumables / Combos"
+msgstr "Consumibles / Combos"
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+msgid ""
+"Duplicate Lines Restriction: Product %s appears multiple times in the "
+"invoice."
+msgstr ""
+"Restricción de Líneas Duplicadas: El producto %s aparece varias veces en la "
+"factura."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid ""
+"Duplicate Lines Restriction: Product %s appears multiple times in the sales "
+"order."
+msgstr ""
+"Restricción de Líneas Duplicadas: El producto %s aparece varias veces en el "
+"pedido de venta."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Duplicate Product"
+msgstr "Producto Duplicado"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,help:prevent_zero_sales.field_res_company__strict_stock_validation
+#: model:ir.model.fields,help:prevent_zero_sales.field_res_config_settings__strict_stock_validation
+msgid ""
+"If checked, stock restrictions apply regardless of the product invoicing "
+"policy. If unchecked, products invoiced on delivered quantities are not "
+"restricted."
+msgstr ""
+"Si está marcado, las restricciones de stock se aplican sin importar la "
+"política de facturación del producto. Si no está marcado, los productos "
+"facturados por cantidades entregadas no se restringen."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Insufficient Stock"
+msgstr "Stock Insuficiente"
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Invalid Quantity"
+msgstr "Cantidad Inválida"
 
 #. module: prevent_zero_sales
 #: model:ir.model,name:prevent_zero_sales.model_account_move
@@ -27,9 +182,147 @@ msgid "Journal Item"
 msgstr "Apunte Contable"
 
 #. module: prevent_zero_sales
-#: model:ir.model,name:prevent_zero_sales.model_product_product
-msgid "Product Variant"
-msgstr "Variante de Producto"
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__invoice_restrict_duplicate
+msgid "Prevent Duplicate Lines (Invoices)"
+msgstr "Prevenir Líneas Duplicadas (Facturas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_duplicate
+msgid "Prevent Duplicate Lines (Sales)"
+msgstr "Prevenir Líneas Duplicadas (Ventas)"
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Prevent Duplicate Lines (Same Product)"
+msgstr "Prevenir Líneas Duplicadas (Mismo Producto)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__restrict_zero_invoice
+msgid "Prevent Invoices with Zero/Negative Stock"
+msgstr "Prevenir Facturas con Stock Cero/Negativo"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__restrict_zero_sale
+msgid "Prevent Sales with Zero/Negative Stock"
+msgstr "Prevenir Ventas con Stock Cero/Negativo"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__restrict_zero_invoice
+msgid "Prevent Zero Invoicing"
+msgstr "Prevenir Facturación en Cero"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__restrict_zero_sale
+msgid "Prevent Zero Sales"
+msgstr "Prevenir Ventas en Cero"
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid ""
+"Prevents adding products with zero or negative stock to customer invoices."
+msgstr "Evita agregar productos con stock cero o negativo a las facturas de cliente."
+
+#. module: prevent_zero_sales
+#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
+msgid "Prevents adding products with zero or negative stock to sales orders."
+msgstr "Evita agregar productos con stock cero o negativo a los pedidos de venta."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Product Not Available"
+msgstr "Producto No Disponible"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_account_move_line__qty_on_hand_check
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_sale_order_line__qty_on_hand_check
+msgid "Qty On Hand Check"
+msgstr "Control de Cantidad Disponible"
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Quantity must be greater than 0. The product has been removed."
+msgstr "La cantidad debe ser mayor a 0. El producto ha sido eliminado."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Requested quantity exceeds available stock (%s)."
+msgstr "La cantidad solicitada excede el stock disponible (%s)."
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__invoice_restrict_consumable
+msgid "Restrict Consumable Products (Invoices)"
+msgstr "Restringir Productos Consumibles (Facturas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_consumable
+msgid "Restrict Consumable Products (Sales)"
+msgstr "Restringir Productos Consumibles (Ventas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__invoice_restrict_consumable
+msgid "Restrict Consumables (Invoices)"
+msgstr "Restringir Consumibles (Facturas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__sale_restrict_consumable
+msgid "Restrict Consumables (Sales)"
+msgstr "Restringir Consumibles (Ventas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__invoice_restrict_duplicate
+msgid "Restrict Duplicate Lines (Invoices)"
+msgstr "Restringir Líneas Duplicadas (Facturas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__sale_restrict_duplicate
+msgid "Restrict Duplicate Lines (Sales)"
+msgstr "Restringir Líneas Duplicadas (Ventas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__invoice_restrict_service
+msgid "Restrict Service Products (Invoices)"
+msgstr "Restringir Productos de Servicio (Facturas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_service
+msgid "Restrict Service Products (Sales)"
+msgstr "Restringir Productos de Servicio (Ventas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__invoice_restrict_service
+msgid "Restrict Services (Invoices)"
+msgstr "Restringir Servicios (Facturas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__sale_restrict_service
+msgid "Restrict Services (Sales)"
+msgstr "Restringir Servicios (Ventas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__invoice_restrict_storable
+msgid "Restrict Storable (Invoices)"
+msgstr "Restringir Almacenables (Facturas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__sale_restrict_storable
+msgid "Restrict Storable (Sales)"
+msgstr "Restringir Almacenables (Ventas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__invoice_restrict_storable
+msgid "Restrict Storable Products (Invoices)"
+msgstr "Restringir Productos Almacenables (Facturas)"
+
+#. module: prevent_zero_sales
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_storable
+msgid "Restrict Storable Products (Sales)"
+msgstr "Restringir Productos Almacenables (Ventas)"
 
 #. module: prevent_zero_sales
 #: model:ir.model,name:prevent_zero_sales.model_sale_order
@@ -42,219 +335,16 @@ msgid "Sales Order Line"
 msgstr "Línea de Pedido de Venta"
 
 #. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__restrict_zero_sale
-msgid "Prevent Zero Sales"
-msgstr "Prevenir Ventas en Cero"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__restrict_zero_invoice
-msgid "Prevent Zero Invoicing"
-msgstr "Prevenir Facturación en Cero"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__restrict_zero_pos
-msgid "Prevent Zero POS"
-msgstr "Prevenir POS en Cero"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__strict_stock_validation
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__strict_stock_validation
-msgid "Strict Stock Validation"
-msgstr "Validación Estricta de Stock"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__strict_stock_validation
-msgid "If checked, restrictions apply to both Ordered and Delivered quantities. If unchecked, only Ordered quantities are restricted."
-msgstr "Si se marca, las restricciones aplican tanto a cantidades Pedidas como Entregadas. Si no, solo se restringen las Pedidas."
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__sale_restrict_storable
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_storable
-msgid "Restrict Storable (Sales)"
-msgstr "Restringir Almacenables (Ventas)"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__sale_restrict_consumable
-msgid "Restrict Consumable (Sales)"
-msgstr "Restringir Consumibles (Ventas)"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__sale_restrict_service
-msgid "Restrict Services (Sales)"
-msgstr "Restringir Servicios (Ventas)"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__sale_restrict_duplicate
-msgid "Restrict Duplicate Lines (Sales)"
-msgstr "Restringir Líneas Duplicadas (Ventas)"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__invoice_restrict_storable
-msgid "Restrict Storable (Invoices)"
-msgstr "Restringir Almacenables (Facturas)"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__invoice_restrict_consumable
-msgid "Restrict Consumable (Invoices)"
-msgstr "Restringir Consumibles (Facturas)"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__invoice_restrict_service
-msgid "Restrict Services (Invoices)"
-msgstr "Restringir Servicios (Facturas)"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_company__invoice_restrict_duplicate
-msgid "Restrict Duplicate Lines (Invoices)"
-msgstr "Restringir Líneas Duplicadas (Facturas)"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_storable
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__invoice_restrict_storable
-msgid "Restrict Storable Products"
-msgstr "Restringir Productos Almacenables"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_consumable
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__invoice_restrict_consumable
-msgid "Restrict Consumable Products"
-msgstr "Restringir Productos Consumibles"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_service
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__invoice_restrict_service
-msgid "Restrict Service Products"
-msgstr "Restringir Productos de Servicio"
-
-#. module: prevent_zero_sales
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__sale_restrict_duplicate
-#: model:ir.fields,field_description:prevent_zero_sales.field_res_config_settings__invoice_restrict_duplicate
-msgid "Prevent Duplicate Lines"
-msgstr "Restringir Líneas Duplicadas"
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "<div class=\"alert alert-danger\" role=\"alert\">⚠️ <b>Stock Alert:</b> Requested quantity exceeds available stock (%s).</div>"
-msgstr "<div class=\"alert alert-danger\" role=\"alert\">⚠️ <b>Alerta de Stock:</b> La cantidad solicitada excede el stock disponible (%s).</div>"
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "<div class=\"alert alert-danger\" role=\"alert\">⚠️ <b>Stock Alert (Sales):</b> Quantity exceeds available stock (%s).</div>"
-msgstr "<div class=\"alert alert-danger\" role=\"alert\">⚠️ <b>Alerta de Stock (Ventas):</b> La cantidad solicitada excede el stock disponible (%s).</div>"
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Cannot confirm: The quantity for product line %s is 0 or negative."
-msgstr "No se puede confirmar: La cantidad para la línea de producto %s es 0 o negativa."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Cannot confirm: The price for product %s is 0 or negative."
-msgstr "No se puede confirmar: El precio para el producto %s es 0 o negativo."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Restriction Active: Not enough stock for product %s. (Requested: %s, Available: %s)"
-msgstr "Restricción Activa: No hay suficiente stock para el producto %s. (Solicitado: %s, Disponible: %s)"
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Duplicate Line Restriction: Product %s is present multiple times in the invoice."
-msgstr "Restricción de Duplicados: El producto %s está presente múltiples veces en la factura."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Cannot confirm an empty sale order."
-msgstr "No se puede confirmar un pedido de venta vacío."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Cannot confirm sale: The quantity for product %s is 0 or negative."
-msgstr "No se puede confirmar venta: La cantidad para el producto %s es 0 o negativa."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Cannot confirm sale: The price for product %s is 0 or negative."
-msgstr "No se puede confirmar venta: El precio para el producto %s es 0 o negativo."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Duplicate Line Restriction: Product %s is present multiple times in the sale order."
-msgstr "Restricción de Duplicados: El producto %s está presente múltiples veces en el pedido de venta."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Duplicate Product"
-msgstr "Producto Duplicado"
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "This product is already present in the order. Duplicate lines are not allowed."
-msgstr "Este producto ya está presente en el pedido. No se permiten líneas duplicadas."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "This product is already present in the invoice. Duplicate lines are not allowed."
-msgstr "Este producto ya está presente en la factura. No se permiten líneas duplicadas."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Invalid Quantity"
-msgstr "Cantidad Inválida"
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Quantity cannot be negative. The product has been removed."
-msgstr "La cantidad no puede ser negativa. El producto ha sido eliminado."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Product Not Available"
-msgstr "Producto No Disponible"
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "The product has been removed because there is no available stock (%s)."
-msgstr "El producto ha sido eliminado porque no hay stock disponible (%s)."
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "Insufficient Stock"
-msgstr "Stock Insuficiente"
-
-#. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/models/models.py:0
-#, python-format
-msgid "You cannot add more quantity because there is not enough stock. (Available: %s)"
-msgstr "No puedes agregar más cantidad porque no hay suficiente stock. (Disponible: %s)"
-
-#. module: prevent_zero_sales
 #: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
-msgid "Prevents adding products with zero or negative stock to sales orders."
-msgstr "Impide agregar productos con stock cero o negativo a los pedidos de venta."
+msgid "Services"
+msgstr "Servicios"
 
 #. module: prevent_zero_sales
-#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
-msgid "Prevents adding products with zero or negative stock to customer invoices."
-msgstr "Impide agregar productos con stock cero o negativo a las facturas de cliente."
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "Stock Alert:"
+msgstr "Alerta de Stock:"
 
 #. module: prevent_zero_sales
 #: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
@@ -262,14 +352,11 @@ msgid "Stock Restrictions"
 msgstr "Restricciones de Stock"
 
 #. module: prevent_zero_sales
-#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
-msgid "Strict Stock Validation"
-msgstr "Validación Estricta de Stock"
-
-#. module: prevent_zero_sales
-#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
-msgid "Restrict Logic"
-msgstr "Lógica de Restricción"
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_account_bank_statement_line__stock_warning_banner
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_account_move__stock_warning_banner
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_sale_order__stock_warning_banner
+msgid "Stock Warning Banner"
+msgstr "Banner de Alerta de Stock"
 
 #. module: prevent_zero_sales
 #: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
@@ -277,21 +364,38 @@ msgid "Storable Products"
 msgstr "Productos Almacenables"
 
 #. module: prevent_zero_sales
-#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
-msgid "Consumable Products"
-msgstr "Productos Consumibles"
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_company__strict_stock_validation
+msgid "Strict Stock Validation"
+msgstr "Validación Estricta de Stock"
 
 #. module: prevent_zero_sales
-#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
-msgid "Services"
-msgstr "Servicios"
+#: model:ir.model.fields,field_description:prevent_zero_sales.field_res_config_settings__strict_stock_validation
+msgid "Strict Stock Validation (Ordered and Delivered)"
+msgstr "Validación Estricta de Stock (Pedidas y Entregadas)"
 
 #. module: prevent_zero_sales
-#: model_terms:ir.ui.view,arch_db:prevent_zero_sales.res_config_settings_view_form_inherit_stock_restriction
-msgid "Prevent Duplicate Lines (Same Product)"
-msgstr "Evitar Líneas Duplicadas (Mismo Producto)"
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid "The product has been removed because there is no available stock (%s)."
+msgstr "El producto ha sido eliminado porque no hay stock disponible (%s)."
 
 #. module: prevent_zero_sales
-#: code:addons/prevent_zero_sales/static/src/js/stock_restricted_list_renderer.js:0
-msgid "Adding products with zero or insufficient stock is not allowed. Please correct existing lines."
-msgstr "No se permite agregar productos con stock cero o insuficiente. Por favor corrija las líneas existentes."
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/account_move.py:0
+msgid ""
+"This product is already present in the invoice. Duplicate lines are not "
+"allowed."
+msgstr ""
+"Este producto ya está presente en la factura. No se permiten líneas "
+"duplicadas."
+
+#. module: prevent_zero_sales
+#. odoo-python
+#: code:addons/prevent_zero_sales/models/sale_order.py:0
+msgid ""
+"This product is already present in the order. Duplicate lines are not "
+"allowed."
+msgstr ""
+"Este producto ya está presente en el pedido. No se permiten líneas "
+"duplicadas."

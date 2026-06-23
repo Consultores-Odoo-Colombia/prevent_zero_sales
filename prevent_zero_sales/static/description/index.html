@@ -1,15 +1,10 @@
 <section class="oe_container">
     <div class="oe_row oe_spaced">
         <h2 class="oe_slogan" style="color:#875A7B;">Prevent Zero Sales</h2>
-        <h3 class="oe_slogan">Strict control of amounts and stock in Sales, Invoicing and POS</h3>
+        <h3 class="oe_slogan">Strict control of quantities, prices and stock in Sales and Invoicing</h3>
         <div class="oe_span12">
-            <div class="text-center oe_mb32">
-                <img src="demo_process.gif"
-                    style="width: 100%; max-width: 800px; height: auto; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"
-                    alt="Process Demo">
-            </div>
             <div class="oe_demo oe_picture oe_screenshot" style="margin-bottom: 80px;">
-                <img src="main_screenshot.png" alt="Main Screenshot">
+                <img src="main_screenshot.png" alt="Prevent Zero Sales - Main banner">
             </div>
         </div>
     </div>
@@ -21,10 +16,10 @@
         <h3 class="oe_slogan">Ensure the integrity of your sales operations</h3>
         <div class="oe_span12 text-justify oe_mt32">
             <p class="oe_mb32" style="font-size: 16px;">
-                This module adds an essential security layer to prevent common errors in the sales process.
-                It strictly prevents customer invoices, vendor bills, credit notes, and point of sale orders from being processed with a
-                total amount of 0.
-                Additionally, it verifies stock availability before confirming sale orders.
+                This module adds an essential validation layer to prevent common errors in the sales process.
+                It blocks the confirmation of Sales Orders and Customer Invoices that contain lines with zero or
+                negative quantities or prices, duplicate products, or quantities that exceed the forecasted stock.
+                Everything is configurable per company and per product type, directly from the standard Settings screens.
             </p>
         </div>
     </div>
@@ -35,33 +30,158 @@
         <h2 class="oe_slogan" style="color:#875A7B;">Main Features</h2>
         <div class="oe_span4">
             <div class="text-center">
-                <i class="fa fa-file-text-o fa-4x" style="color: #875A7B;"></i>
-                <h4 class="oe_mt16">Invoice Validation</h4>
-                <p>Prevents confirmation of invoices (Customer/Vendor) and credit notes if the total amount is 0, avoiding erroneous
-                    accounting entries.</p>
-            </div>
-        </div>
-        <div class="oe_span4">
-            <div class="text-center">
                 <i class="fa fa-cubes fa-4x" style="color: #875A7B;"></i>
                 <h4 class="oe_mt16">Stock Control</h4>
-                <p>Blocks the confirmation of Sale Orders if there is not enough stock on hand (qty_available), preventing sales without
-                    inventory.</p>
+                <p>Blocks the confirmation of Sales Orders and Customer Invoices when the requested quantity exceeds the
+                    forecasted stock (virtual available), with real-time warning banners while editing.</p>
             </div>
         </div>
         <div class="oe_span4">
             <div class="text-center">
-                <i class="fa fa-shopping-cart fa-4x" style="color: #875A7B;"></i>
-                <h4 class="oe_mt16">POS Security</h4>
-                <p>Restricts the creation of orders in the Point of Sale if the total amount is 0, ensuring that every transaction has
-                    value.</p>
+                <i class="fa fa-file-text-o fa-4x" style="color: #875A7B;"></i>
+                <h4 class="oe_mt16">Zero Quantity &amp; Price Validation</h4>
+                <p>Prevents confirming orders or posting customer invoices that contain product lines with zero or negative
+                    quantities or prices, avoiding erroneous documents and accounting entries.</p>
             </div>
         </div>
         <div class="oe_span4">
             <div class="text-center">
                 <i class="fa fa-clone fa-4x" style="color: #875A7B;"></i>
                 <h4 class="oe_mt16">Duplicate Prevention</h4>
-                <p>Prevents adding the same product multiple times in Sales Orders and Invoices to ensure clean and correct data entry.</p>
+                <p>Optionally prevents adding the same product multiple times in Sales Orders and Invoices to ensure clean
+                    and correct data entry.</p>
+            </div>
+        </div>
+        <div class="oe_span4">
+            <div class="text-center">
+                <i class="fa fa-sliders fa-4x" style="color: #875A7B;"></i>
+                <h4 class="oe_mt16">Granular Configuration</h4>
+                <p>Enable restrictions independently for Sales and Invoicing, choose the affected product types
+                    (storable, consumable/combo, service) and switch between strict or policy-based validation.</p>
+            </div>
+        </div>
+        <div class="oe_span4">
+            <div class="text-center">
+                <i class="fa fa-bolt fa-4x" style="color: #875A7B;"></i>
+                <h4 class="oe_mt16">Interactive Line Validation</h4>
+                <p>Products with no available stock are removed on the fly, excess quantities are capped automatically and
+                    new rows are blocked until existing violations are fixed.</p>
+            </div>
+        </div>
+        <div class="oe_span4">
+            <div class="text-center">
+                <i class="fa fa-shield fa-4x" style="color: #875A7B;"></i>
+                <h4 class="oe_mt16">Server-Side Enforcement</h4>
+                <p>All rules are enforced again on confirmation and posting, so UI checks cannot be bypassed through
+                    imports, shortcuts or API calls.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan" style="color:#875A7B; margin-top: 32px;">Configuration in Sales</h2>
+        <h3 class="oe_slogan">Turn each rule on or off from Sales &gt; Settings</h3>
+        <div class="oe_span12 text-justify oe_mt32">
+            <p class="oe_mb32" style="font-size: 16px;">
+                From the standard Sales settings, the <strong>Stock Restrictions</strong> section lets you enable the
+                validation of sales orders and choose exactly which checks to enforce: zero/negative quantity, zero/negative
+                price, insufficient stock and duplicate lines. You can also pick which product types are affected
+                (storable, consumables/combos, services) and lock draft invoices generated from a sales order.
+            </p>
+        </div>
+        <div class="oe_span12">
+            <div class="oe_demo oe_picture oe_screenshot">
+                <img src="main_1.png" alt="Stock Restrictions settings in Sales">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan" style="color:#875A7B; margin-top: 32px;">Real-Time Validation While Editing</h2>
+        <h3 class="oe_slogan">Clear warnings the moment an invalid value is entered</h3>
+    </div>
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12 text-justify oe_mt16">
+            <h4 style="color:#875A7B;">Invalid Quantity</h4>
+            <p class="oe_mb16" style="font-size: 16px;">
+                When a line is left with a zero or negative quantity, the module warns the user and automatically
+                adjusts the value to a valid minimum, preventing empty or negative order lines.
+            </p>
+        </div>
+        <div class="oe_span12">
+            <div class="oe_demo oe_picture oe_screenshot">
+                <img src="main_3.png" alt="Invalid Quantity warning">
+            </div>
+        </div>
+    </div>
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12 text-justify oe_mt32">
+            <h4 style="color:#875A7B;">Insufficient Stock</h4>
+            <p class="oe_mb16" style="font-size: 16px;">
+                If the requested quantity exceeds the available stock, the user is notified and the quantity is
+                capped to the maximum quantity that can actually be delivered.
+            </p>
+        </div>
+        <div class="oe_span12">
+            <div class="oe_demo oe_picture oe_screenshot">
+                <img src="main_4.png" alt="Insufficient Stock warning">
+            </div>
+        </div>
+    </div>
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12 text-justify oe_mt32">
+            <h4 style="color:#875A7B;">Duplicate Product</h4>
+            <p class="oe_mb16" style="font-size: 16px;">
+                When a product already present in the order is added again, the module blocks the duplicate line and
+                asks the user to update the existing one instead, keeping the document clean.
+            </p>
+        </div>
+        <div class="oe_span12">
+            <div class="oe_demo oe_picture oe_screenshot">
+                <img src="main_2.png" alt="Duplicate Product warning">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan" style="color:#875A7B; margin-top: 32px;">Configuration in Invoicing</h2>
+        <h3 class="oe_slogan">The same protection applied to Customer Invoices</h3>
+        <div class="oe_span12 text-justify oe_mt32">
+            <p class="oe_mb32" style="font-size: 16px;">
+                From the Invoicing settings you can independently enable the validation of customer invoices on posting.
+                The same validators are available &mdash; zero/negative quantity and price, insufficient stock and duplicate
+                lines &mdash; plus the option to also validate lines coming from a sales order and to choose the affected
+                product types.
+            </p>
+        </div>
+        <div class="oe_span12">
+            <div class="oe_demo oe_picture oe_screenshot">
+                <img src="main_5.png" alt="Stock Restrictions settings in Invoicing">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan" style="color:#875A7B; margin-top: 32px;">Invoice Protection</h2>
+        <h3 class="oe_slogan">No invalid invoices reach your accounting</h3>
+        <div class="oe_span12 text-justify oe_mt32">
+            <p class="oe_mb32" style="font-size: 16px;">
+                When an invoice cannot be created because there are no items available to invoice, the module shows a
+                clear message explaining the cause and how to solve it &mdash; deliver the products first or review the
+                invoicing policy &mdash; avoiding empty or incorrect accounting entries.
+            </p>
+        </div>
+        <div class="oe_span12">
+            <div class="oe_demo oe_picture oe_screenshot">
+                <img src="main_6.png" alt="Invalid Operation when creating an invoice">
             </div>
         </div>
     </div>

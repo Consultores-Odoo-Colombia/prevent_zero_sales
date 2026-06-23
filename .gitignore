@@ -1,0 +1,10 @@
+# Editor / IDE
+.vscode/
+.idea/
+
+# Claude Code local settings
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
